@@ -1,6 +1,7 @@
 import React from 'react';
 import AdvertisementService from './AdvertisementService';
 import './AdvertisementsList.css'
+import {Link} from "react-router-dom";
 
 class AdvertisementsList extends React.Component {
     constructor(props) {
@@ -31,6 +32,7 @@ class AdvertisementsList extends React.Component {
     }
 
     render() {
+        let url = "http://localhost:8080/api/image/";
         const { error, isLoaded, advertisements } = this.state;
         if (error) {
             return <div>Ошибка: {error.message}</div>;
@@ -58,10 +60,11 @@ class AdvertisementsList extends React.Component {
                     {advertisements.map(ad => (
                         <tr key={ad.id}>
                             <td>{ad.id}</td>
-                            <td>{ad.title}</td>
+                            {/*<td> <a href={"http://localhost:3000/advertisement/" + ad.id}> {ad.title} </a> </td>*/}
+                            <td> <Link to="/advertisement/444"> {ad.title} </Link> </td>
                             <td>{ad.text}</td>
                             <td>{ad.price}</td>
-                            <td>{"There will be an image"}</td>
+                            <td> <img src={url + ad.id} alt="Loading..."/> </td>
                             <td>{ad.type.name}</td>
                             <td>{ad.category.name}</td>
                             <td>{ad.owner.firstName} {ad.owner.secondName}</td>
