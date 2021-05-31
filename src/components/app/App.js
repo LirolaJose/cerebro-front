@@ -1,13 +1,12 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
-import Dashboard from '../Dashboard';
-import AdvertisementsList from '../advertisement/AdvertisementsList'
+import AdvertisementsList from '../advertisement_list/AdvertisementsList';
+import Advertisement from '../advertisement/Advertisement';
 import Login from '../login/Login';
-import useToken from './useToken';
+import useToken from '../../services/useToken';
 
 function App() {
-
     const { token, setToken } = useToken();
 
     if(!token) {
@@ -17,16 +16,12 @@ function App() {
     return (
         <div className="wrapper">
             <h1>Application</h1>
-            <BrowserRouter>
+            <Router>
                 <Switch>
-                    <Route path="/dashboard" >
-                        <Dashboard />
-                    </Route>
-                    <Route path="/advertisement">
-                        <AdvertisementsList />
-                    </Route>
+                    <Route path="/advertisement/:id" component={Advertisement}/>
+                    <Route  path="/advertisement" component={AdvertisementsList}/>
                 </Switch>
-            </BrowserRouter>
+            </Router>
         </div>
     );
 }
