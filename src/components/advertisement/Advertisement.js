@@ -59,9 +59,9 @@ class Advertisement extends React.Component {
     render() {
         const {error, isLoaded, advertisement, imagesIdsList, additionalServices} = this.state;
         if (error) {
-            return <div>Ошибка: {error.message}</div>;
+            return <div>Error: {error.message}</div>;
         } else if (!isLoaded) {
-            return <div>Загрузка...</div>;
+            return <div>Loading...</div>;
         } else {
             console.log(advertisement);
 
@@ -75,7 +75,7 @@ class Advertisement extends React.Component {
                         </div>
                         : <div id="images">
                             {imagesIdsList.map(image => (
-                                <div key={image}><img src={API_ADVERTISEMENT + "/image/" + image}/></div>
+                                <div key={image}><img src={API_ADVERTISEMENT + "/image/" + image} alt="Loading..."/></div>
                             ))}
                         </div>
                     }

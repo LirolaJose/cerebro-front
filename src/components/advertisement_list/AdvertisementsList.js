@@ -36,9 +36,9 @@ class AdvertisementsList extends React.Component {
     render() {
         const { error, isLoaded, advertisements } = this.state;
         if (error) {
-            return <div>Ошибка: {error.message}</div>;
+            return <div>Error: {error.message}</div>;
         } else if (!isLoaded) {
-            return <div>Загрузка...</div>;
+            return <div>Loading...</div>;
         } else {
             console.log(advertisements);
             return (
