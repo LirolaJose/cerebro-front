@@ -1,14 +1,15 @@
 import {API_ADVERTISEMENT} from "../CommonData";
+import FetchService from "./FetchService";
 
 class AdvertisementService {
 
     getAdvertisementsList() {
-        return fetch(API_ADVERTISEMENT)
+        return FetchService.handleFetch(API_ADVERTISEMENT)
             .then(res => res.json());
     }
 
     getAdvertisementById(advertisementId) {
-        return fetch(API_ADVERTISEMENT + "/" + advertisementId)
+        return FetchService.handleFetch(API_ADVERTISEMENT + "/" + advertisementId)
             .then(res => res.json());
     }
 
@@ -19,12 +20,11 @@ class AdvertisementService {
         Object.keys(images).forEach(image => {
             data.append("images", images[image])
         })
-        fetch(API_ADVERTISEMENT + "/", {method: "POST", body: data})
+
+        return FetchService.handleFetch(API_ADVERTISEMENT + "/", {method: "POST", body: data})
             .then(result => {
                 window.location.href = "/advertisement";
-            });
-
-
+            }).catch(err => err.json());
     }
 }
 

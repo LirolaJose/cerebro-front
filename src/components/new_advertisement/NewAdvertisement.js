@@ -19,7 +19,8 @@ class NewAdvertisement extends React.Component {
             types: [],
             categories: [],
             additionalServices: [],
-            images: []
+            images: [],
+            btnDisable: false
         }
         this.handleChange = this.handleChange.bind(this);
         this.changeTypes = this.changeTypes.bind(this);
@@ -90,6 +91,9 @@ class NewAdvertisement extends React.Component {
     }
 
     collectAndSendAdvertisement() {
+        this.setState({
+            btnDisable: true
+        })
         const advertisement = {
             title: this.state.title,
             text: this.state.text,
@@ -98,12 +102,12 @@ class NewAdvertisement extends React.Component {
             categoryId: this.state.selectedCategory,
             additionalServicesId: this.state.selectedAdditionalServices,
         }
-        AdvertisementService.createAdvertisement(advertisement, this.state.images);
+        AdvertisementService.createAdvertisement(advertisement, this.state.images).catch(err => alert(err.message));
     }
 
 
     render() {
-        const {isLoaded, types, categories, additionalServices} = this.state;
+        const {isLoaded, types, categories, additionalServices, btnDisable} = this.state;
         if (!isLoaded) {
             return <div>Loading...</div>;
         } else {
@@ -158,7 +162,7 @@ class NewAdvertisement extends React.Component {
                                        formEncType="multipart/form-data" type="file" multiple
                                        onChange={event => this.changeImages(event)}/></div>
 
-                    <div><input id="button-submit" type="button" onClick={this.collectAndSendAdvertisement}
+                    <div><input id="button-submit" disabled={this.state.btnDisable} type="button" onClick={this.collectAndSendAdvertisement}
                                 value="Add advertisement"/>
                     </div>
                 </div>
