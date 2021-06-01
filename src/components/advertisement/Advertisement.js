@@ -75,7 +75,8 @@ class Advertisement extends React.Component {
                         </div>
                         : <div id="images">
                             {imagesIdsList.map(image => (
-                                <div key={image}><img src={API_ADVERTISEMENT + "/image/" + image} alt="Loading..."/></div>
+                                <div key={image}><img src={API_ADVERTISEMENT + "/image/" + image} alt="Loading..."/>
+                                </div>
                             ))}
                         </div>
                     }
@@ -108,6 +109,6 @@ class Advertisement extends React.Component {
             )
         }
     }
-    }
+}
 
-    export default Advertisement;
+export default Advertisement;

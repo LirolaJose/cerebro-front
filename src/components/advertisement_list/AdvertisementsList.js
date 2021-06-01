@@ -61,7 +61,6 @@ class AdvertisementsList extends React.Component {
                     {advertisements.map(ad => (
                         <tr key={ad.id}>
                             <td>{ad.id}</td>
-                            {/*<td> <a href={"http://localhost:3000/advertisement/" + ad.id}> {ad.title} </a> </td>*/}
                             <td> <Link to={"/advertisement/" + ad.id}> {ad.title} </Link> </td>
                             <td>{ad.text}</td>
                             <td>{ad.price}</td>
