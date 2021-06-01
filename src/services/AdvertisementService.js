@@ -19,12 +19,10 @@ class AdvertisementService {
         Object.keys(images).forEach(image => {
             data.append("images", images[image])
         })
-        fetch(API_ADVERTISEMENT + "/", {method: "POST", body: data})
+        fetch(API_ADVERTISEMENT + "/", {method: "POST", body: data},)
             .then(result => {
                 window.location.href = "/advertisement";
             });
-
-
     }
 }
 

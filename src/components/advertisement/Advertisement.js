@@ -10,18 +10,19 @@ class Advertisement extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            advertisementId: parseInt(this.props.match.params.id),
             error: null,
             isLoaded: false,
             advertisement: null,
             imagesIdsList: [],
             additionalServices: []
         };
+        this.redirectToOrderForm = this.redirectToOrderForm.bind(this);
     }
 
     componentDidMount() {
-        const advertisementId = parseInt(this.props.match.params.id);
-
-        AdvertisementService.getAdvertisementById(advertisementId)
+        // const advertisementId = parseInt(this.props.match.params.id);
+        AdvertisementService.getAdvertisementById(this.state.advertisementId)
             .then(
                 (result) => {
                     this.setState({
@@ -37,7 +38,7 @@ class Advertisement extends React.Component {
                 }
             );
 
-        ImagesService.getImagesList(advertisementId)
+        ImagesService.getImagesList(this.state.advertisementId)
             .then(
                 (imagesList) => {
                     this.setState({
@@ -46,7 +47,7 @@ class Advertisement extends React.Component {
                 }
             );
 
-        AdditionalServiceService.getAdditionalServicesByAdvertisementId(advertisementId)
+        AdditionalServiceService.getAdditionalServicesByAdvertisementId(this.state.advertisementId)
             .then(
                 (additionalServicesList) => {
                     this.setState({
@@ -54,6 +55,10 @@ class Advertisement extends React.Component {
                     })
                 }
             );
+    }
+    redirectToOrderForm() {
+        const path = "/advertisement/order/" + this.state.advertisementId;
+        this.props.history.push(path);
     }
 
     render() {
@@ -81,7 +86,6 @@ class Advertisement extends React.Component {
                         </div>
                     }
 
-
                     <div id="text">
                         <textarea className="text-area" id="textArea" readOnly>{advertisement.text}</textarea>
                     </div>
@@ -103,7 +107,8 @@ class Advertisement extends React.Component {
                     <div id="type">Type: {advertisement.type.name}</div>
                     <div id="category">Category: {advertisement.category.name}</div>
                     <div id="owner">Owner: {advertisement.owner.firstName} {advertisement.owner.secondName}</div>
-                    <div id="order"></div>
+                    <div id="order"><input type="button" value="ORDER"
+                                           onClick={this.redirectToOrderForm}/></div>
 
                 </div>
             )
