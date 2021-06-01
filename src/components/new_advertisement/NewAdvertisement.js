@@ -2,7 +2,7 @@ import React from "react";
 import TypeService from "../../services/TypeService";
 import CategoryService from "../../services/CategoryService";
 import AdditionalServiceService from "../../services/AdditionalServiceService";
-import {API_ADVERTISEMENT} from "../../CommonData";
+import AdvertisementService from "../../services/AdvertisementService";
 
 
 class NewAdvertisement extends React.Component {
@@ -25,7 +25,7 @@ class NewAdvertisement extends React.Component {
         this.changeTypes = this.changeTypes.bind(this);
         this.changeCategory = this.changeCategory.bind(this);
         this.changeImages = this.changeImages.bind(this);
-        this.createAdvertisement = this.createAdvertisement.bind(this);
+        this.collectAndSendAdvertisement = this.collectAndSendAdvertisement.bind(this);
     }
 
     componentDidMount() {
@@ -89,7 +89,7 @@ class NewAdvertisement extends React.Component {
        });
     }
 
-    createAdvertisement() {
+    collectAndSendAdvertisement() {
         const advertisement = {
             title: this.state.title,
             text: this.state.text,
@@ -98,19 +98,7 @@ class NewAdvertisement extends React.Component {
             categoryId: this.state.selectedCategory,
             additionalServicesId: this.state.selectedAdditionalServices,
         }
-        let data = new FormData();
-        data.append("advertisementDTO", new Blob([JSON.stringify(advertisement)], {type: "application/json"}));
-
-        const images = this.state.images;
-        Object.keys(images).forEach( image => {
-            data.append("images", images[image])
-        })
-
-        const requestOptions = {
-            method: "POST",
-            body: data
-        }
-        fetch(API_ADVERTISEMENT + "/", requestOptions).then(result => result.json());
+        AdvertisementService.createAdvertisement(advertisement, this.state.images);
     }
 
 
@@ -170,7 +158,7 @@ class NewAdvertisement extends React.Component {
                                        formEncType="multipart/form-data" type="file" multiple
                                        onChange={event => this.changeImages(event)}/></div>
 
-                    <div><input id="button-submit" type="button" onClick={this.createAdvertisement}
+                    <div><input id="button-submit" type="button" onClick={this.collectAndSendAdvertisement}
                                 value="Add advertisement"/>
                     </div>
                 </div>
