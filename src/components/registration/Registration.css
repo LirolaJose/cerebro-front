@@ -1,0 +1,4 @@
+.required-field::before {
+    color: red;
+    content: "*";
+}
