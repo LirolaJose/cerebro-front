@@ -7,6 +7,7 @@ import NewAdvertisement from '../new_advertisement/NewAdvertisement';
 import Login from '../login/Login';
 import useToken from '../../services/useToken';
 import OrderAdvertisement from "../order_advertisement/OrderAdvertisement";
+import Registration from "../registration/Registration";
 
 function App() {
     const { token, setToken } = useToken();
@@ -24,6 +25,7 @@ function App() {
                     <Route path="/advertisement/new" component={NewAdvertisement}/>
                     <Route path="/advertisement/:id" component={Advertisement}/>
                     <Route  path="/advertisement" component={AdvertisementsList}/>
+                    <Route path="/registration" component={Registration}/>
                 </Switch>
             </Router>
         </div>
