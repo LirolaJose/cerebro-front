@@ -1,9 +1,9 @@
-import {TYPES} from "../CommonData";
+import {API_TYPES} from "../CommonData";
 
 class TypeService {
 
     getTypes() {
-        return fetch(TYPES).then(res => res.json());
+        return fetch(API_TYPES).then(res => res.json());
     }
 }
 export default new TypeService();

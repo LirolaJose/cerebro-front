@@ -1,8 +1,8 @@
-import {CATEGORIES} from "../CommonData";
+import {API_CATEGORIES} from "../CommonData";
 
 class CategoryService{
     getCategories(typeId){
-        return fetch(CATEGORIES + "/" + typeId).then(res => res.json());
+        return fetch(API_CATEGORIES + "/" + typeId).then(res => res.json());
     }
 }
 export default new CategoryService();
