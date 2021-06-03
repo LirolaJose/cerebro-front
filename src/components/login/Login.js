@@ -1,51 +1,45 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import './Login.css';
+import AuthService from "../../services/AuthService";
+import RedirectTo from "../route/RedirectTo";
 
-async function loginUser(credentials) {
-    return fetch('http://localhost:8080/api/auth', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
-    })
-        .then(data => data.json())
-}
 
-export default function Login({ setToken }) {
-    const [login, setUserName] = useState();
-    const [password, setPassword] = useState();
-
-    const handleSubmit = async e => {
-        e.preventDefault();
-        const token = await loginUser({
-            login,
-            password
-        });
-        setToken(token);
+class Login extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            login: "",
+            password: ""
+        }
+        this.collectAndSendCredentials = this.collectAndSendCredentials.bind(this);
+    }
+    collectAndSendCredentials(){
+        const credentials = {
+            login: this.state.login,
+            password: this.state.password
+        }
+        AuthService.loginUser(credentials)
+            .then(res => RedirectTo.redirectToHome());
     }
 
-    return(
-        <div className="login-wrapper">
-            <h1>Please Log In</h1>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    <p>Username</p>
-                    <input type="text" onChange={e => setUserName(e.target.value)} />
-                </label>
-                <label>
-                    <p>Password</p>
-                    <input type="password" onChange={e => setPassword(e.target.value)} />
-                </label>
-                <div>
-                    <button type="submit">Submit</button>
-                </div>
-            </form>
-        </div>
-    )
+    render() {
+        return (
+            <div className="login-wrapper">
+                <h1>Please Log In</h1>
+                    <label>
+                        <p>Username</p>
+                        <input type="text" onChange={event => this.setState({login: event.target.value})}/>
+                    </label>
+                    <label>
+                        <p>Password</p>
+                        <input type="password" onChange={event => this.setState({password: event.target.value})}/>
+                    </label>
+                    <div>
+                        <button type="submit" onClick={this.collectAndSendCredentials}>Submit</button>
+                    </div>
+            </div>
+        )
+    }
 }
 
-Login.propTypes = {
-    setToken: PropTypes.func.isRequired
-};
+export default Login;

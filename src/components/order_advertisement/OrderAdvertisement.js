@@ -14,6 +14,7 @@ class OrderAdvertisement extends React.Component {
             additionalServices: [],
             selectedAdditionalServices: [],
             totalPrice: 0,
+            btnDisable: false
         }
         this.getTotalPrice = this.getTotalPrice.bind(this);
         this.collectAndSendOrder = this.collectAndSendOrder.bind(this);
@@ -67,6 +68,9 @@ class OrderAdvertisement extends React.Component {
 
 
     collectAndSendOrder() {
+        this.setState({
+            btnDisable: true
+        })
         const advertisementOrderDTO = {
             advertisementId: this.state.advertisement.id,
             additionalServicesId: this.state.selectedAdditionalServices
@@ -76,7 +80,7 @@ class OrderAdvertisement extends React.Component {
 
 
     render() {
-        const {isLoaded, advertisement, orderable, additionalServices, totalPrice} = this.state;
+        const {isLoaded, advertisement, orderable, additionalServices, totalPrice, btnDisable} = this.state;
         if (!isLoaded) {
             return <div>Loading...</div>;
         } else {
@@ -104,7 +108,7 @@ class OrderAdvertisement extends React.Component {
 
                     {orderable === false
                         ? <div/>
-                        : <div><input id="order-button" type="button" onClick={this.collectAndSendOrder}
+                        : <div><input id="order-button" disabled={this.state.btnDisable} type="button" onClick={this.collectAndSendOrder}
                                       value="CONFIRM THE ORDER"/>
                         </div>}
                 </div>
