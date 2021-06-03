@@ -1,11 +1,12 @@
-import {API_REGISTRATION} from "../CommonData";
+import React from 'react';
+import FetchService from "./FetchService";
+import {API_USER} from "../CommonData";
 
-class UserService{
-    registerNewUser(userInfoDTO){
-        fetch(API_REGISTRATION, {method: "POST",  headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(userInfoDTO)})
-            .then(result => {
-                window.location.href = "/advertisement";
-            });
-    }
+
+export const TopUpBalance = (props) => {
+        const money = {
+                value: props.money
+        }
+        return FetchService.handleFetch(API_USER + "/" + props.userId + "/money/",
+            {method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(money)})
 }
-export default new UserService();

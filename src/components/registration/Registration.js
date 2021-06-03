@@ -1,6 +1,6 @@
 import React from "react";
 import "./Registration.css"
-import UserService from "../../services/UserService";
+import AuthService from "../../services/AuthService";
 
 class Registration extends React.Component {
     constructor(props) {
@@ -34,7 +34,7 @@ class Registration extends React.Component {
             email: this.state.email,
             password: this.state.password
         }
-        UserService.registerNewUser(user);
+        AuthService.registerNewUser(user);
     }
 
     render() {

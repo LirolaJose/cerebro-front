@@ -1,8 +1,9 @@
 import {API_IMAGE} from "../CommonData";
+import FetchService from "./FetchService";
 
 class ImageService {
     getImagesList(advertisementId){
-        return fetch(API_IMAGE + "/imagesList/" + advertisementId)
+        return  FetchService.handleFetch(API_IMAGE + "/imagesList/" + advertisementId)
             .then(res => res.json());
     }
 }
