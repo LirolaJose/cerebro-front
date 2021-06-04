@@ -34,7 +34,10 @@ class Registration extends React.Component {
             email: this.state.email,
             password: this.state.password
         }
-        AuthService.registerNewUser(user);
+        AuthService.registerNewUser(user)
+            .then(result => {
+                window.location.href = "/advertisement";
+            });
     }
 
     render() {

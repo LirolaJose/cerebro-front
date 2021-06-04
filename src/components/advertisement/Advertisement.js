@@ -21,8 +21,8 @@ class Advertisement extends React.Component {
     }
 
     componentDidMount() {
-        // const advertisementId = parseInt(this.props.match.params.id);
         AdvertisementService.getAdvertisementById(this.state.advertisementId)
+            .then(res => res.json())
             .then(
                 (result) => {
                     this.setState({
@@ -39,6 +39,7 @@ class Advertisement extends React.Component {
             );
 
         ImagesService.getImagesList(this.state.advertisementId)
+            .then(res => res.json())
             .then(
                 (imagesList) => {
                     this.setState({
@@ -48,8 +49,8 @@ class Advertisement extends React.Component {
             );
 
         AdditionalServiceService.getAdditionalServicesByAdvertisementId(this.state.advertisementId)
-            .then(
-                (additionalServicesList) => {
+            .then(res => res.json())
+            .then((additionalServicesList) => {
                     this.setState({
                         additionalServices: additionalServicesList
                     })

@@ -4,13 +4,11 @@ import FetchService from "./FetchService";
 class AdvertisementService {
 
     getAdvertisementsList() {
-        return FetchService.handleFetch(API_ADVERTISEMENT)
-            .then(res => res.json());
+        return FetchService.handleFetch(API_ADVERTISEMENT);
     }
 
     getAdvertisementById(advertisementId) {
-        return FetchService.handleFetch(API_ADVERTISEMENT + "/" + advertisementId)
-            .then(res => res.json());
+        return FetchService.handleFetch(API_ADVERTISEMENT + "/" + advertisementId);
     }
 
     createAdvertisement(advertisementDTO, images) {
@@ -20,11 +18,7 @@ class AdvertisementService {
         Object.keys(images).forEach(image => {
             data.append("images", images[image])
         })
-
         return FetchService.handleFetch(API_ADVERTISEMENT + "/", {method: "POST", body: data})
-            .then(result => {
-                window.location.href = "/advertisement";
-            }).catch(err => err.json());
     }
 }
 

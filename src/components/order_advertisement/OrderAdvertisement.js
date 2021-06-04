@@ -3,6 +3,7 @@ import {Link} from "react-router-dom";
 import {API_IMAGE} from "../../CommonData";
 import OrderService from "../../services/OrderService";
 import AdditionalServiceService from "../../services/AdditionalServiceService";
+import AdvertisementService from "../../services/AdvertisementService";
 
 class OrderAdvertisement extends React.Component {
     constructor(props) {
@@ -22,7 +23,7 @@ class OrderAdvertisement extends React.Component {
 
     componentDidMount() {
         const advertisementId = parseInt(this.props.match.params.id);
-        OrderService.getAdvertisementById(advertisementId)
+        AdvertisementService.getAdvertisementById(advertisementId)
             .then((result) => {
                 this.setState({
                     isLoaded: true,
@@ -36,6 +37,7 @@ class OrderAdvertisement extends React.Component {
                 }
             })
         AdditionalServiceService.getAdditionalServicesByAdvertisementId(advertisementId)
+            .then(res => res.json())
             .then((result) => {
                 this.setState({
                     additionalServices: result
@@ -75,7 +77,10 @@ class OrderAdvertisement extends React.Component {
             advertisementId: this.state.advertisement.id,
             additionalServicesId: this.state.selectedAdditionalServices
         }
-        OrderService.createOrder(advertisementOrderDTO);
+        OrderService.createOrder(advertisementOrderDTO)
+            .then(result => {
+            window.location.href = "/advertisement";
+        });
     }
 
 

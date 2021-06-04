@@ -3,7 +3,7 @@ import FetchService from "./FetchService";
 
 class CategoryService{
     getCategories(typeId){
-        return  FetchService.handleFetch(API_CATEGORIES + "/" + typeId).then(res => res.json());
+        return  FetchService.handleFetch(API_CATEGORIES + "/" + typeId);
     }
 }
 export default new CategoryService();

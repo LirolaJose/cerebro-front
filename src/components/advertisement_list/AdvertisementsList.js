@@ -17,6 +17,7 @@ class AdvertisementsList extends React.Component {
 
     componentDidMount() {
         AdvertisementService.getAdvertisementsList()
+            .then(res => res.json())
             .then(
                 (result) => {
                     this.setState({

@@ -3,14 +3,13 @@ import FetchService from "./FetchService";
 
 class AdditionalServiceService {
 
-    getAdditionalServicesByAdvertisementId(advertisementId){
-        return FetchService.handleFetch(API_ADDITIONAL_SERVICES + "/advertisement/" + advertisementId)
-            .then(res => res.json());
+    getAdditionalServicesByAdvertisementId(advertisementId) {
+        return FetchService.handleFetch(API_ADDITIONAL_SERVICES + "/advertisement/" + advertisementId);
     }
 
-    getAdditionalServicesByCategoryId(categoryId){
-        return FetchService.handleFetch(API_ADDITIONAL_SERVICES + "/category/" + categoryId)
-            .then(res => res.json());
+    getAdditionalServicesByCategoryId(categoryId) {
+        return FetchService.handleFetch(API_ADDITIONAL_SERVICES + "/category/" + categoryId);
     }
 }
+
 export default new AdditionalServiceService();

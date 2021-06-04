@@ -4,7 +4,7 @@ import FetchService from "./FetchService";
 class TypeService {
 
     getTypes() {
-        return  FetchService.handleFetch(API_TYPES).then(res => res.json());
+        return  FetchService.handleFetch(API_TYPES);
     }
 }
 export default new TypeService();

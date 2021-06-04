@@ -12,7 +12,7 @@ class NewAdvertisement extends React.Component {
             isLoaded: false,
             title: "",
             text: "",
-            price: 0,
+            price: null,
             selectedType: null,
             selectedCategory: null,
             selectedAdditionalServices: [],
@@ -31,6 +31,7 @@ class NewAdvertisement extends React.Component {
 
     componentDidMount() {
         TypeService.getTypes()
+            .then(res => res.json())
             .then(result => {
                 this.setState({
                     isLoaded: true,
@@ -67,6 +68,7 @@ class NewAdvertisement extends React.Component {
     changeTypes(event) {
         this.handleChange(event);
         CategoryService.getCategories(event.target.value)
+            .then(res => res.json())
             .then(result => {
                 this.setState({
                     categories: result
@@ -77,6 +79,7 @@ class NewAdvertisement extends React.Component {
     changeCategory(event) {
         this.handleChange(event);
         AdditionalServiceService.getAdditionalServicesByCategoryId(event.target.value)
+            .then(res => res.json())
             .then(result => {
                 this.setState({
                     additionalServices: result
@@ -102,7 +105,15 @@ class NewAdvertisement extends React.Component {
             categoryId: this.state.selectedCategory,
             additionalServicesId: this.state.selectedAdditionalServices,
         }
-        AdvertisementService.createAdvertisement(advertisement, this.state.images).catch(err => alert(err.message));
+        AdvertisementService.createAdvertisement(advertisement, this.state.images)
+            .then(result => {
+                window.location.href = "/advertisement";
+            })
+            .catch(r => {
+                this.setState({
+                    btnDisable: false
+                })
+            });
     }
 
 
@@ -115,6 +126,7 @@ class NewAdvertisement extends React.Component {
                 <div>
                     <div>Title <span className="required-field"/> <label htmlFor="title"/> <input id="title"
                                                                                                   name="title"
+                                                                                                  value={this.state.title}
                                                                                                   onChange={this.handleChange}
                                                                                                   type="text"/>
                     </div>
@@ -122,6 +134,7 @@ class NewAdvertisement extends React.Component {
                                                                placeholder="Write a description"/>
                     </div>
                     <div>Price <span className="required-field"/> <label htmlFor="price"/><input id="price" name="price"
+                                                                                                 value={this.state.price}
                                                                                                  onChange={this.handleChange}
                                                                                                  type="text"/>
                     </div>
@@ -129,16 +142,16 @@ class NewAdvertisement extends React.Component {
                     <div>Type <span className="required-field"/> <label htmlFor="select-type"/>
                         <select id="select-type" name="selectedType"
                                 onChange={event => this.changeTypes(event)}>
-                            <option disabled selected>Please, choose the type</option>
+                            <option disabled selected value={null}>Please, choose the type</option>
                             {types.map(type => (
                                 <option key={type.id} value={type.id}>{type.name}</option>
                             ))}
                         </select></div>
 
                     <div>Category <span className="required-field"/> <label htmlFor="select-category"/>
-                        <select id="select-category" name="selectedCategory"
+                        <select id="select-category" disabled={!this.state.selectedType} name="selectedCategory"
                                 onChange={event => this.changeCategory(event)}>
-                            <option>- - -</option>
+                            {!this.state.selectedType ? <option value={null} selected disabled>- - -</option> : ''}
                             {categories.map(category => (
                                 <option key={category.id} value={category.id}>{category.name}</option>
                             ))}

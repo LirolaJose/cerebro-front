@@ -11,7 +11,14 @@ class FetchService {
             }
         }
 
-       return fetch(url, settings);
+       return fetch(url, settings).then(res =>{
+           if(res.ok){
+               return res;
+           }else {
+               res.json().then(err => alert(err.message));
+               return  Promise.reject(res)
+           }
+       });
     }
 }
 

@@ -5,12 +5,11 @@ import AdvertisementsList from '../advertisement_list/AdvertisementsList';
 import Advertisement from '../advertisement/Advertisement';
 import NewAdvertisement from '../new_advertisement/NewAdvertisement';
 import Login from '../login/Login';
-import useToken from '../../services/useToken';
 import OrderAdvertisement from "../order_advertisement/OrderAdvertisement";
 import Registration from "../registration/Registration";
 import GuardedRoute from "../route/GuardedRoute";
 import AuthService from "../../services/AuthService";
-import {HeaderInfo} from "../main/HeaderInfo";
+import {HeaderInfo} from "../header/HeaderInfo";
 
 class App extends React.Component {
     constructor(props) {
@@ -24,13 +23,19 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        AuthService.getCurrentUser().then(user => {
-            this.setState({
-                isLoaded: true,
-                user: user.value,
-                isAuthenticated: user.value !== null
-            })
-        });
+        AuthService.getCurrentUser()
+            .then(res => res.json())
+            .then(user => {
+                if (user.value === null) {
+                    localStorage.removeItem("token")
+                }
+                console.log(user)
+                this.setState({
+                    isLoaded: true,
+                    user: user.value,
+                    isAuthenticated: user.value !== null
+                })
+            });
     }
 
 
