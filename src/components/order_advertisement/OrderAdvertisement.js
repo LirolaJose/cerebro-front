@@ -24,6 +24,7 @@ class OrderAdvertisement extends React.Component {
     componentDidMount() {
         const advertisementId = parseInt(this.props.match.params.id);
         AdvertisementService.getAdvertisementById(advertisementId)
+            .then(res => res.json())
             .then((result) => {
                 this.setState({
                     isLoaded: true,

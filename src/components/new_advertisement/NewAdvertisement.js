@@ -3,6 +3,13 @@ import TypeService from "../../services/TypeService";
 import CategoryService from "../../services/CategoryService";
 import AdditionalServiceService from "../../services/AdditionalServiceService";
 import AdvertisementService from "../../services/AdvertisementService";
+import { MapContainer, TileLayer } from 'react-leaflet';
+import "./NewAdvertisement.css";
+import "./leaflet.css";
+import "./layers.png";
+import "./layers-2x.png";
+import "./marker-shadow.png"
+import {DraggableMarker} from "../DraggableMarker";
 
 
 class NewAdvertisement extends React.Component {
@@ -20,6 +27,7 @@ class NewAdvertisement extends React.Component {
             categories: [],
             additionalServices: [],
             images: [],
+            position: [51.65635088095043, 39.19295310974122],
             btnDisable: false
         }
         this.handleChange = this.handleChange.bind(this);
@@ -118,7 +126,8 @@ class NewAdvertisement extends React.Component {
 
 
     render() {
-        const {isLoaded, types, categories, additionalServices, btnDisable} = this.state;
+        const {isLoaded, types, categories, additionalServices, position} = this.state;
+
         if (!isLoaded) {
             return <div>Loading...</div>;
         } else {
@@ -130,9 +139,11 @@ class NewAdvertisement extends React.Component {
                                                                                                   onChange={this.handleChange}
                                                                                                   type="text"/>
                     </div>
+
                     <div>Text <label htmlFor="text"/><textarea id="text" name="text" onChange={this.handleChange}
                                                                placeholder="Write a description"/>
                     </div>
+
                     <div>Price <span className="required-field"/> <label htmlFor="price"/><input id="price" name="price"
                                                                                                  value={this.state.price}
                                                                                                  onChange={this.handleChange}
@@ -173,7 +184,18 @@ class NewAdvertisement extends React.Component {
 
                     <div>Images <input id="image" name="images" accept="image/jpeg, image/png, image/jpg"
                                        formEncType="multipart/form-data" type="file" multiple
-                                       onChange={event => this.changeImages(event)}/></div>
+                                       onChange={event => this.changeImages(event)}/>
+                    </div>
+
+                    <MapContainer style={{ height: "400px" }}  className="map" center={[51.65635088095043, 39.19295310974122]}
+                                  zoom={14} scrollWheelZoom={true}>
+                        <TileLayer
+                            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        />
+                        <DraggableMarker position={position}/>
+                    </MapContainer>,
+
 
                     <div><input id="button-submit" disabled={this.state.btnDisable} type="button" onClick={this.collectAndSendAdvertisement}
                                 value="Add advertisement"/>
@@ -182,8 +204,6 @@ class NewAdvertisement extends React.Component {
             )
         }
     }
-
-
 }
 
 export default NewAdvertisement;
