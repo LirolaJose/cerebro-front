@@ -11,7 +11,8 @@ const icon = new L.icon({
     iconSize: [30, 30]
 });
 
-export function DraggableMarker() {
+
+export function DraggableMarker(props) {
     const [draggable, setDraggable] = useState(true)
     const [position, setPosition] = useState(center)
     const markerRef = useRef(null)
@@ -20,7 +21,8 @@ export function DraggableMarker() {
             dragend() {
                 const marker = markerRef.current
                 if (marker != null) {
-                    setPosition(marker.getLatLng())
+                    setPosition(marker.getLatLng());
+                    props.onChange(marker.getLatLng())
                 }
             },
         }),
@@ -35,8 +37,11 @@ export function DraggableMarker() {
             draggable={draggable}
             eventHandlers={eventHandlers}
             position={position}
+            lat={position.lat}
+            lng={position.lng}
             ref={markerRef}
-            icon={icon}>
+            icon={icon}
+            onChange={props.onChange}>
             <Popup minWidth={90}>
         <span onClick={toggleDraggable}>
           {draggable

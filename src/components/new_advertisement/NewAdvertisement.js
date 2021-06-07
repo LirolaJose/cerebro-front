@@ -11,7 +11,6 @@ import "./layers-2x.png";
 import "./marker-shadow.png"
 import {DraggableMarker} from "../DraggableMarker";
 
-
 class NewAdvertisement extends React.Component {
     constructor(props) {
         super(props);
@@ -28,12 +27,15 @@ class NewAdvertisement extends React.Component {
             additionalServices: [],
             images: [],
             position: [51.65635088095043, 39.19295310974122],
+            lat: null,
+            lng: null,
             btnDisable: false
         }
         this.handleChange = this.handleChange.bind(this);
         this.changeTypes = this.changeTypes.bind(this);
         this.changeCategory = this.changeCategory.bind(this);
         this.changeImages = this.changeImages.bind(this);
+        this.changePosition = this.changePosition.bind(this);
         this.collectAndSendAdvertisement = this.collectAndSendAdvertisement.bind(this);
     }
 
@@ -101,6 +103,14 @@ class NewAdvertisement extends React.Component {
        });
     }
 
+    changePosition(event){
+        const { lat, lng } = event;
+        this.setState({
+            lat: lat,
+            lng: lng
+        })
+    }
+
     collectAndSendAdvertisement() {
         this.setState({
             btnDisable: true
@@ -112,6 +122,8 @@ class NewAdvertisement extends React.Component {
             type: this.state.selectedType,
             categoryId: this.state.selectedCategory,
             additionalServicesId: this.state.selectedAdditionalServices,
+            latitude: this.lat,
+            longitude: this.lng
         }
         AdvertisementService.createAdvertisement(advertisement, this.state.images)
             .then(result => {
@@ -193,7 +205,7 @@ class NewAdvertisement extends React.Component {
                             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
-                        <DraggableMarker position={position}/>
+                        <DraggableMarker lat={this.lat} lng={this.lng} onChange={this.changePosition}/>
                     </MapContainer>,
 
 
