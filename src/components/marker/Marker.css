@@ -1,0 +1,12 @@
+.map {
+    /*overflow: hidden;*/
+    /*-webkit-tap-highlight-color: transparent;*/
+    /*cursor: grab;*/
+    /*background: #ddd;*/
+    /*outline: 0;*/
+    /*font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;*/
+    /*touch-action: none;*/
+    width: 600px;
+    height: 400px;
+    position: relative;
+}

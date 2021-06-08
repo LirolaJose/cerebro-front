@@ -3,13 +3,9 @@ import TypeService from "../../services/TypeService";
 import CategoryService from "../../services/CategoryService";
 import AdditionalServiceService from "../../services/AdditionalServiceService";
 import AdvertisementService from "../../services/AdvertisementService";
-import { MapContainer, TileLayer } from 'react-leaflet';
-import "./NewAdvertisement.css";
-import "./leaflet.css";
-import "./layers.png";
-import "./layers-2x.png";
-import "./marker-shadow.png"
-import {DraggableMarker} from "../DraggableMarker";
+import {MapContainer, TileLayer} from 'react-leaflet';
+import {DraggableMarker} from "../marker/DraggableMarker";
+
 
 class NewAdvertisement extends React.Component {
     constructor(props) {
@@ -26,9 +22,8 @@ class NewAdvertisement extends React.Component {
             categories: [],
             additionalServices: [],
             images: [],
-            position: [51.65635088095043, 39.19295310974122],
-            lat: null,
-            lng: null,
+            position: {lat: 51.65635088095043, lng: 39.19295310974122},
+            checkedCoordinates: false,
             btnDisable: false
         }
         this.handleChange = this.handleChange.bind(this);
@@ -36,6 +31,7 @@ class NewAdvertisement extends React.Component {
         this.changeCategory = this.changeCategory.bind(this);
         this.changeImages = this.changeImages.bind(this);
         this.changePosition = this.changePosition.bind(this);
+        this.setLocation = this.setLocation.bind(this)
         this.collectAndSendAdvertisement = this.collectAndSendAdvertisement.bind(this);
     }
 
@@ -98,16 +94,24 @@ class NewAdvertisement extends React.Component {
     }
 
     changeImages(event) {
-       this.setState({
-           images: event.target.files
-       });
+        this.setState({
+            images: event.target.files
+        });
     }
 
-    changePosition(event){
-        const { lat, lng } = event;
+    changePosition(event) {
+        const {lat, lng} = event;
         this.setState({
-            lat: lat,
-            lng: lng
+            position: {
+                lat: lat,
+                lng: lng
+            }
+        })
+    }
+
+    setLocation() {
+        this.setState({
+            checkedCoordinates: !this.state.checkedCoordinates
         })
     }
 
@@ -122,10 +126,15 @@ class NewAdvertisement extends React.Component {
             type: this.state.selectedType,
             categoryId: this.state.selectedCategory,
             additionalServicesId: this.state.selectedAdditionalServices,
-            latitude: this.lat,
-            longitude: this.lng
         }
-        AdvertisementService.createAdvertisement(advertisement, this.state.images)
+        let coordinates;
+        if (this.state.checkedCoordinates) {
+            coordinates = {
+                latitude: this.state.position.lat,
+                longitude: this.state.position.lng
+            }
+        }
+        AdvertisementService.createAdvertisement(advertisement, this.state.images, coordinates)
             .then(result => {
                 window.location.href = "/advertisement";
             })
@@ -138,7 +147,7 @@ class NewAdvertisement extends React.Component {
 
 
     render() {
-        const {isLoaded, types, categories, additionalServices, position} = this.state;
+        const {isLoaded, types, categories, additionalServices, checkedCoordinates, position} = this.state;
 
         if (!isLoaded) {
             return <div>Loading...</div>;
@@ -199,17 +208,24 @@ class NewAdvertisement extends React.Component {
                                        onChange={event => this.changeImages(event)}/>
                     </div>
 
-                    <MapContainer style={{ height: "400px" }}  className="map" center={[51.65635088095043, 39.19295310974122]}
-                                  zoom={14} scrollWheelZoom={true}>
-                        <TileLayer
-                            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        />
-                        <DraggableMarker lat={this.lat} lng={this.lng} onChange={this.changePosition}/>
-                    </MapContainer>,
+
+                    <label htmlFor="location-checkbox"> Set a location </label>
+                    <input key="location-checkbox" type="checkbox" onChange={this.setLocation}/>
+
+                    {checkedCoordinates
+                        ? <MapContainer style={{ height: "400px" }} className="w-25" center={[51.65635088095043, 39.19295310974122]}
+                                        zoom={14} scrollWheelZoom={true}>
+                            <TileLayer
+                                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            />
+                            <DraggableMarker lat={position.lat} lng={position.lng} onChange={this.changePosition}/>
+                        </MapContainer>
+                        : <div/>}
 
 
-                    <div><input id="button-submit" disabled={this.state.btnDisable} type="button" onClick={this.collectAndSendAdvertisement}
+                    <div><input id="button-submit" disabled={this.state.btnDisable} type="button"
+                                onClick={this.collectAndSendAdvertisement}
                                 value="Add advertisement"/>
                     </div>
                 </div>

@@ -4,6 +4,10 @@ import AdditionalServiceService from "../../services/AdditionalServiceService";
 import ImagesService from "../../services/ImageService";
 import {API_ADVERTISEMENT} from "../../CommonData";
 import ImagesPNG from "../../image/images.png";
+import {Carousel, CarouselItem, Image} from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {MapContainer, TileLayer} from 'react-leaflet';
+import {MyMarker} from "../marker/MyMarker";
 
 
 class Advertisement extends React.Component {
@@ -15,7 +19,8 @@ class Advertisement extends React.Component {
             isLoaded: false,
             advertisement: null,
             imagesIdsList: [],
-            additionalServices: []
+            additionalServices: [],
+            coordinates: null
         };
         this.redirectToOrderForm = this.redirectToOrderForm.bind(this);
     }
@@ -24,11 +29,16 @@ class Advertisement extends React.Component {
         AdvertisementService.getAdvertisementById(this.state.advertisementId)
             .then(res => res.json())
             .then(
-                (result) => {
+                (resultAdvertisement) => {
                     this.setState({
                         isLoaded: true,
-                        advertisement: result
+                        advertisement: resultAdvertisement,
                     });
+                    if (resultAdvertisement.latitude && resultAdvertisement.longitude) {
+                        this.setState({
+                            coordinates: {lat: resultAdvertisement.latitude, lng: resultAdvertisement.longitude}
+                        })
+                    }
                 },
                 (error) => {
                     this.setState({
@@ -57,13 +67,14 @@ class Advertisement extends React.Component {
                 }
             );
     }
+
     redirectToOrderForm() {
         const path = "/advertisement/order/" + this.state.advertisementId;
         this.props.history.push(path);
     }
 
     render() {
-        const {error, isLoaded, advertisement, imagesIdsList, additionalServices} = this.state;
+        const {error, isLoaded, advertisement, imagesIdsList, additionalServices, coordinates} = this.state;
         if (error) {
             return <div>Error: {error.message}</div>;
         } else if (!isLoaded) {
@@ -79,18 +90,21 @@ class Advertisement extends React.Component {
                         ? <div id="images">
                             <div><img src={ImagesPNG} alt="Loading..."/></div>
                         </div>
-                        : <div id="images">
+                        :
+                        <Carousel className="w-25">
                             {imagesIdsList.map(image => (
-                                <div key={image}><img src={API_ADVERTISEMENT + "/image/" + image} alt="Loading..."/>
-                                </div>
+                                <CarouselItem>
+                                    <Image className="d-block w-100 h-25" src={API_ADVERTISEMENT + "/image/" + image}
+                                           alt="Loading..."/>
+                                </CarouselItem>
                             ))}
-                        </div>
+                        </Carousel>
                     }
 
                     <div id="text">
                         <textarea className="text-area" id="textArea" readOnly>{advertisement.text}</textarea>
                     </div>
-                    <div id="price" className="price">Price: {advertisement.price}</div>
+                    <div id="price" className="price">Price: {advertisement.price} $</div>
 
                     {additionalServices.length === 0
                         ? <div/>
@@ -103,6 +117,18 @@ class Advertisement extends React.Component {
                                 )}
                             </ol>
                         </div>
+                    }
+                    {coordinates
+                        ? <MapContainer style={{ height: "400px" }}  className="w-25" center={coordinates}
+                                        zoom={14}>
+                            <TileLayer
+                                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            />
+                            <MyMarker lat={coordinates.lat} lng={coordinates.lng} position={coordinates}/>
+                        </MapContainer>
+                        :
+                        <div/>
                     }
 
                     <div id="type">Type: {advertisement.type.name}</div>

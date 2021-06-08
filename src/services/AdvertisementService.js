@@ -11,9 +11,13 @@ class AdvertisementService {
         return FetchService.handleFetch(API_ADVERTISEMENT + "/" + advertisementId);
     }
 
-    createAdvertisement(advertisementDTO, images) {
+    createAdvertisement(advertisementDTO, images, coordinatesDTO) {
         let data = new FormData();
         data.append("advertisementDTO", new Blob([JSON.stringify(advertisementDTO)], {type: "application/json"}));
+        if(coordinatesDTO) {
+            data.append("coordinatesDTO", new Blob([JSON.stringify(coordinatesDTO)], {type: "application/json"}));
+        }
+
 
         Object.keys(images).forEach(image => {
             data.append("images", images[image])

@@ -3,7 +3,8 @@ import AdvertisementService from '../../services/AdvertisementService';
 import './AdvertisementsList.css';
 import {Link} from "react-router-dom";
 import {API_IMAGE} from "../../CommonData";
-// import 'bootstrap/dist/css/bootstrap.css';
+import {Navbar, Nav, Table} from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 class AdvertisementsList extends React.Component {
     constructor(props) {
@@ -44,7 +45,8 @@ class AdvertisementsList extends React.Component {
             console.log(advertisements);
             return (
                 <div>
-                <table className="table" id="table" align="center">
+                {/*<table className="table" id="table" align="center">*/}
+                    <Table striped bordered hover size="sm">
                     <caption>ADVERTISEMENTS</caption>
                     <thead>
                     <tr>
@@ -61,10 +63,10 @@ class AdvertisementsList extends React.Component {
                     <tbody>
                     {advertisements.map(ad => (
                         <tr key={ad.id}>
-                            <td>{ad.id}</td>
-                            <td> <Link to={"/advertisement/" + ad.id}> {ad.title} </Link> </td>
+                            <td className="justify-content-center">{ad.id}</td>
+                            <td > <Link to={"/advertisement/" + ad.id}> {ad.title} </Link> </td>
                             <td>{ad.text}</td>
-                            <td>{ad.price}</td>
+                            <td>{ad.price} $</td>
                             <td> <img src={API_IMAGE + "/" + ad.id} alt="Loading..."/> </td>
                             <td>{ad.type.name}</td>
                             <td>{ad.category.name}</td>
@@ -72,7 +74,7 @@ class AdvertisementsList extends React.Component {
                         </tr>
                         ))}
                     </tbody>
-                </table>
+                    </Table>
                 </div>
 
             );
