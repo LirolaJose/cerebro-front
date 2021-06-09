@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { TopUpBalance } from "../../services/UserService"
-// import Logo2 from "../../image/cerebro-logo.png";
-import Logo2 from "../../image/logo.png";
+import Logo from "../../image/logo.png";
 import { Navbar, Nav } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -13,7 +12,7 @@ export const HeaderInfo = (props) => {
 
     return (
         <Navbar bg="light" variant="light" expand="lg">
-            <Navbar.Brand href="/advertisement"><img src={Logo2} alt="Loading..."/></Navbar.Brand>
+            <Navbar.Brand href="/advertisement"><img src={Logo} alt="Loading..."/></Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
                 {!props.isAuthenticated

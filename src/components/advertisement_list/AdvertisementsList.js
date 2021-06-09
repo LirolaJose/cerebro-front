@@ -3,8 +3,9 @@ import AdvertisementService from '../../services/AdvertisementService';
 import './AdvertisementsList.css';
 import {Link} from "react-router-dom";
 import {API_IMAGE} from "../../CommonData";
-import {Navbar, Nav, Table} from "react-bootstrap";
+import {Table} from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {MyPagination} from "../pagination/Pagination";
 
 class AdvertisementsList extends React.Component {
     constructor(props) {
@@ -12,18 +13,29 @@ class AdvertisementsList extends React.Component {
         this.state = {
             error: null,
             isLoaded: false,
-            advertisements: []
+            advertisements: [],
+            activePage: 1,
+            totalPages: 0,
+
         };
+        this.handlePageChange = this.handlePageChange.bind(this);
+        this.getAdvertisementsList = this.getAdvertisementsList.bind(this)
     }
 
     componentDidMount() {
-        AdvertisementService.getAdvertisementsList()
+        this.getAdvertisementsList(this.state.activePage);
+    }
+
+    getAdvertisementsList(pageNumber) {
+        AdvertisementService.getAdvertisementsList(pageNumber - 1)
             .then(res => res.json())
             .then(
                 (result) => {
+                    console.log(result);
                     this.setState({
                         isLoaded: true,
-                        advertisements: result
+                        advertisements: result.content,
+                        totalPages: result.totalPages
                     });
                 },
                 (error) => {
@@ -35,19 +47,30 @@ class AdvertisementsList extends React.Component {
             )
     }
 
+    handlePageChange(event, pageNumber) {
+        this.setState(
+            {
+                activePage: pageNumber
+            }
+        );
+        this.getAdvertisementsList(pageNumber)
+    }
+
+
     render() {
-        const { error, isLoaded, advertisements } = this.state;
+        const {error, isLoaded, advertisements, activePage, totalPages} = this.state;
         if (error) {
             return <div>Error: {error.message}</div>;
         } else if (!isLoaded) {
             return <div>Loading...</div>;
         } else {
             console.log(advertisements);
-            return (
-                <div>
-                {/*<table className="table" id="table" align="center">*/}
-                    <Table striped bordered hover size="sm">
-                    <caption>ADVERTISEMENTS</caption>
+        }
+        return (
+            <div>
+                <MyPagination onClick={this.handlePageChange} activePage={activePage} totalPages={totalPages}/>
+
+                <Table striped bordered hover size="sm">
                     <thead>
                     <tr>
                         <th>№</th>
@@ -64,22 +87,23 @@ class AdvertisementsList extends React.Component {
                     {advertisements.map(ad => (
                         <tr key={ad.id}>
                             <td className="justify-content-center">{ad.id}</td>
-                            <td > <Link to={"/advertisement/" + ad.id}> {ad.title} </Link> </td>
+                            <td><Link to={"/advertisement/" + ad.id}> {ad.title} </Link></td>
                             <td>{ad.text}</td>
                             <td>{ad.price} $</td>
-                            <td> <img src={API_IMAGE + "/" + ad.id} alt="Loading..."/> </td>
+                            <td><img src={API_IMAGE + "/" + ad.id} alt="Loading..."/></td>
                             <td>{ad.type.name}</td>
                             <td>{ad.category.name}</td>
                             <td>{ad.owner.firstName} {ad.owner.secondName}</td>
                         </tr>
-                        ))}
+                    ))}
                     </tbody>
-                    </Table>
-                </div>
+                </Table>
 
-            );
-        }
+                <MyPagination onClick={this.handlePageChange} activePage={activePage} totalPages={totalPages}/>
+            </div>
+        );
     }
 }
+
 
 export default AdvertisementsList;

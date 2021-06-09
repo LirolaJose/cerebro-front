@@ -3,8 +3,8 @@ import FetchService from "./FetchService";
 
 class AdvertisementService {
 
-    getAdvertisementsList() {
-        return FetchService.handleFetch(API_ADVERTISEMENT);
+    getAdvertisementsList(pageNumber) {
+        return FetchService.handleFetch(API_ADVERTISEMENT + "?page=" + pageNumber);
     }
 
     getAdvertisementById(advertisementId) {
