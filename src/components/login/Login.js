@@ -20,6 +20,7 @@ class Login extends React.Component {
             password: this.state.password
         }
         AuthService.loginUser(credentials)
+            // fixme move it to AuthService in the same way as logout (only for token logic, dont move post-processing to services for other cases)
             .then(result =>
                 result.json()
                     .then(data => {

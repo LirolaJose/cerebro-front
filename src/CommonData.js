@@ -1,3 +1,4 @@
+// fixme check api url configuration via environment props or via package.json
 export const SERVER_URL = "http://localhost:8080";
 
 export const API_ADDITIONAL_SERVICES = SERVER_URL + "/api/additionalServices";

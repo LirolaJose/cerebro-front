@@ -16,7 +16,10 @@ export const HeaderInfo = (props) => {
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
                 {!props.isAuthenticated
+                    // fixme disabled=!props.isAuthenticated instead of copy paste!
                     ? <Nav>
+                        {/*// fixme https://stackoverflow.com/a/58198328*/}
+                        {/*// Don't use a button as a link. Instead, use a link styled as a button.*/}
                         <button disabled onClick={() => history.push('/advertisement/new')}>New Advertisement</button>
                     </Nav>
 

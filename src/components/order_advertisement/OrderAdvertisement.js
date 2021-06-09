@@ -45,6 +45,7 @@ class OrderAdvertisement extends React.Component {
                 })
             })
     }
+    //fixme add empty line
     getTotalPrice(event, servicePrice) {
         const target = event.target;
         let totalPrice = this.state.totalPrice;
@@ -80,6 +81,7 @@ class OrderAdvertisement extends React.Component {
         }
         OrderService.createOrder(advertisementOrderDTO)
             .then(result => {
+                //fixme use Redirect To
             window.location.href = "/advertisement";
         });
     }

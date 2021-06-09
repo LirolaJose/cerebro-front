@@ -134,6 +134,7 @@ class Advertisement extends React.Component {
                     <div id="type">Type: {advertisement.type.name}</div>
                     <div id="category">Category: {advertisement.category.name}</div>
                     <div id="owner">Owner: {advertisement.owner.firstName} {advertisement.owner.secondName}</div>
+                    {/*fixme https://stackoverflow.com/a/58198328 <Link to="/page/+state.id"*/}
                     <div id="order"><input type="button" value="ORDER"
                                            onClick={this.redirectToOrderForm}/></div>
 
