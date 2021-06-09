@@ -36,6 +36,7 @@ class Registration extends React.Component {
         }
         AuthService.registerNewUser(user)
             .then(result => {
+                // fixme use RedirectTo
                 window.location.href = "/advertisement";
             });
     }

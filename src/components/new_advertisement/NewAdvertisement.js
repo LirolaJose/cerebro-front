@@ -78,6 +78,7 @@ class NewAdvertisement extends React.Component {
             .then(result => {
                 this.setState({
                     categories: result
+                    //fixme clean selected category, selected services?
                 })
             })
     }
@@ -89,6 +90,7 @@ class NewAdvertisement extends React.Component {
             .then(result => {
                 this.setState({
                     additionalServices: result
+                    //fixme selected services?
                 })
             })
     }
@@ -102,6 +104,7 @@ class NewAdvertisement extends React.Component {
     changePosition(event) {
         const {lat, lng} = event;
         this.setState({
+            // fixme position: event; without unwraping?
             position: {
                 lat: lat,
                 lng: lng
@@ -136,6 +139,7 @@ class NewAdvertisement extends React.Component {
         }
         AdvertisementService.createAdvertisement(advertisement, this.state.images, coordinates)
             .then(result => {
+                // fixme use Redirect To
                 window.location.href = "/advertisement";
             })
             .catch(r => {
@@ -183,6 +187,7 @@ class NewAdvertisement extends React.Component {
                     <div>Category <span className="required-field"/> <label htmlFor="select-category"/>
                         <select id="select-category" disabled={!this.state.selectedType} name="selectedCategory"
                                 onChange={event => this.changeCategory(event)}>
+                            {/*fixme : </div> in the same way as everywhere?*/}
                             {!this.state.selectedType ? <option value={null} selected disabled>- - -</option> : ''}
                             {categories.map(category => (
                                 <option key={category.id} value={category.id}>{category.name}</option>
@@ -213,6 +218,7 @@ class NewAdvertisement extends React.Component {
                     <input key="location-checkbox" type="checkbox" onChange={this.setLocation}/>
 
                     {checkedCoordinates
+                        // fixme use center from state position, not magic consts
                         ? <MapContainer style={{ height: "400px" }} className="w-25" center={[51.65635088095043, 39.19295310974122]}
                                         zoom={14} scrollWheelZoom={true}>
                             <TileLayer

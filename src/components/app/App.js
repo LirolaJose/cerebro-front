@@ -26,6 +26,8 @@ class App extends React.Component {
         AuthService.getCurrentUser()
             .then(res => res.json())
             .then(user => {
+                // fixme is it possible to move user logic to auth service or not?
+                // so all token ops will be in auth service
                 if (user.value === null) {
                     localStorage.removeItem("token")
                 }
@@ -46,6 +48,7 @@ class App extends React.Component {
         } else {
             return (
                     <Router>
+                        {/*fixme redirect to /advertisement automatically*/}
                         <Route path="/" component={() => <HeaderInfo  user={user} isAuthenticated={isAuthenticated} />} />
                         <Switch>
                             <GuardedRoute path="/advertisement/order/:id" component={OrderAdvertisement}

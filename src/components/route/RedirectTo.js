@@ -11,6 +11,7 @@ class RedirectTo {
         window.location.href = "/advertisement";
     }
 
+    //fixme dead code
     redirectToLogin() {
         window.location.href = "login";
     }
