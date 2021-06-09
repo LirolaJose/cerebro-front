@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter as Router, Route, Switch  } from 'react-router-dom';
+import {BrowserRouter as Router, Redirect, Route, Switch} from 'react-router-dom';
 import './App.css';
 import AdvertisementsList from '../advertisement_list/AdvertisementsList';
 import Advertisement from '../advertisement/Advertisement';
@@ -24,20 +24,14 @@ class App extends React.Component {
 
     componentDidMount() {
         AuthService.getCurrentUser()
-            .then(res => res.json())
             .then(user => {
-                // fixme is it possible to move user logic to auth service or not?
-                // so all token ops will be in auth service
-                if (user.value === null) {
-                    localStorage.removeItem("token")
-                }
                 console.log(user)
                 this.setState({
                     isLoaded: true,
                     user: user.value,
                     isAuthenticated: user.value !== null
                 })
-            });
+            })
     }
 
 
@@ -47,21 +41,23 @@ class App extends React.Component {
             return <div>Loading...</div>;
         } else {
             return (
-                    <Router>
-                        {/*fixme redirect to /advertisement automatically*/}
-                        <Route path="/" component={() => <HeaderInfo  user={user} isAuthenticated={isAuthenticated} />} />
-                        <Switch>
-                            <GuardedRoute path="/advertisement/order/:id" component={OrderAdvertisement}
-                                          auth={isAuthenticated}/>
-                            <GuardedRoute path="/advertisement/new" component={NewAdvertisement}
-                                          auth={isAuthenticated}/>
-                            <Route path="/advertisement/:id" component={Advertisement} auth={isAuthenticated}/>
-                            <Route path="/advertisement" component={AdvertisementsList}/>
-                            <Route path="/registration" component={Registration}/>
-                            <Route path="/login" component={Login}/>
-                            <Route path="/logout" component={AuthService.logoutUser}/>
-                        </Switch>
-                    </Router>
+                <Router>
+                    <Route path="/" component={() => <HeaderInfo user={user} isAuthenticated={isAuthenticated}/>}/>
+
+                    <Switch>
+
+                        <GuardedRoute path="/advertisement/order/:id" component={OrderAdvertisement}
+                                      auth={isAuthenticated}/>
+                        <GuardedRoute path="/advertisement/new" component={NewAdvertisement}
+                                      auth={isAuthenticated}/>
+                        <Route path="/advertisement/:id" component={Advertisement} auth={isAuthenticated}/>
+                        <Route path="/advertisement" component={AdvertisementsList}/>
+                        <Route path="/registration" component={Registration}/>
+                        <Route path="/login" component={Login}/>
+                        <Route path="/logout" component={AuthService.logoutUser}/>
+                        <Route path="/" render={() => <Redirect to="/advertisement"/>}/>
+                    </Switch>
+                </Router>
             );
         }
     }

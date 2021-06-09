@@ -4,6 +4,7 @@ import {API_IMAGE} from "../../CommonData";
 import OrderService from "../../services/OrderService";
 import AdditionalServiceService from "../../services/AdditionalServiceService";
 import AdvertisementService from "../../services/AdvertisementService";
+import RedirectTo from "../route/RedirectTo";
 
 class OrderAdvertisement extends React.Component {
     constructor(props) {
@@ -45,13 +46,13 @@ class OrderAdvertisement extends React.Component {
                 })
             })
     }
-    //fixme add empty line
+
     getTotalPrice(event, servicePrice) {
         const target = event.target;
         let totalPrice = this.state.totalPrice;
         let services = this.state.selectedAdditionalServices;
 
-        if(target.checked){
+        if (target.checked) {
             totalPrice += servicePrice;
             services.push(target.value);
             this.setState({
@@ -59,7 +60,7 @@ class OrderAdvertisement extends React.Component {
                 selectedAdditionalServices: services
             })
 
-        }else {
+        } else {
             totalPrice -= servicePrice;
             services = services.filter(service => service !== target.value)
             this.setState({
@@ -69,7 +70,6 @@ class OrderAdvertisement extends React.Component {
             })
         }
     }
-
 
     collectAndSendOrder() {
         this.setState({
@@ -81,14 +81,13 @@ class OrderAdvertisement extends React.Component {
         }
         OrderService.createOrder(advertisementOrderDTO)
             .then(result => {
-                //fixme use Redirect To
-            window.location.href = "/advertisement";
-        });
+                RedirectTo.redirectToHome();
+            });
     }
 
 
     render() {
-        const {isLoaded, advertisement, orderable, additionalServices, totalPrice, btnDisable} = this.state;
+        const {isLoaded, advertisement, orderable, additionalServices, totalPrice} = this.state;
         if (!isLoaded) {
             return <div>Loading...</div>;
         } else {
@@ -112,11 +111,12 @@ class OrderAdvertisement extends React.Component {
                             ))}
                         </div>
                     }
-                    <div>Total price: <input id="total-price" type="text" value={totalPrice} readOnly/> </div>
+                    <div>Total price: <input id="total-price" type="text" value={totalPrice} readOnly/></div>
 
                     {orderable === false
                         ? <div/>
-                        : <div><input id="order-button" disabled={this.state.btnDisable} type="button" onClick={this.collectAndSendOrder}
+                        : <div><input id="order-button" disabled={this.state.btnDisable} type="button"
+                                      onClick={this.collectAndSendOrder}
                                       value="CONFIRM THE ORDER"/>
                         </div>}
                 </div>

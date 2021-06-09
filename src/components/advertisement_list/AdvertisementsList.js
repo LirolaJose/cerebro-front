@@ -75,8 +75,7 @@ class AdvertisementsList extends React.Component {
                     <tr>
                         <th>№</th>
                         <th>Title</th>
-                        {/*fixme move to css*/}
-                        <th width="200px">Text</th>
+                        <th className="text">Text</th>
                         <th>Price</th>
                         <th>Image</th>
                         <th>Type</th>

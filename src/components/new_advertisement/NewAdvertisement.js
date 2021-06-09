@@ -5,6 +5,7 @@ import AdditionalServiceService from "../../services/AdditionalServiceService";
 import AdvertisementService from "../../services/AdvertisementService";
 import {MapContainer, TileLayer} from 'react-leaflet';
 import {DraggableMarker} from "../marker/DraggableMarker";
+import RedirectTo from "../route/RedirectTo";
 
 
 class NewAdvertisement extends React.Component {
@@ -77,8 +78,11 @@ class NewAdvertisement extends React.Component {
             .then(res => res.json())
             .then(result => {
                 this.setState({
-                    categories: result
-                    //fixme clean selected category, selected services?
+                    categories: result,
+                    additionalServices: null,
+                    selectedCategory: null,
+                    selectedAdditionalServices: []
+
                 })
             })
     }
@@ -89,8 +93,8 @@ class NewAdvertisement extends React.Component {
             .then(res => res.json())
             .then(result => {
                 this.setState({
-                    additionalServices: result
-                    //fixme selected services?
+                    additionalServices: result,
+                    selectedAdditionalServices: []
                 })
             })
     }
@@ -104,7 +108,6 @@ class NewAdvertisement extends React.Component {
     changePosition(event) {
         const {lat, lng} = event;
         this.setState({
-            // fixme position: event; without unwraping?
             position: {
                 lat: lat,
                 lng: lng
@@ -139,8 +142,7 @@ class NewAdvertisement extends React.Component {
         }
         AdvertisementService.createAdvertisement(advertisement, this.state.images, coordinates)
             .then(result => {
-                // fixme use Redirect To
-                window.location.href = "/advertisement";
+                RedirectTo.redirectToHome();
             })
             .catch(r => {
                 this.setState({
@@ -187,14 +189,16 @@ class NewAdvertisement extends React.Component {
                     <div>Category <span className="required-field"/> <label htmlFor="select-category"/>
                         <select id="select-category" disabled={!this.state.selectedType} name="selectedCategory"
                                 onChange={event => this.changeCategory(event)}>
-                            {/*fixme : </div> in the same way as everywhere?*/}
-                            {!this.state.selectedType ? <option value={null} selected disabled>- - -</option> : ''}
+                            {!this.state.selectedType || !this.state.selectedCategory ? <option value={null} selected disabled>Please, choose the category</option> : <div/>}
+
+                            {/*{!this.state.selectedCategory ? <option value={null} selected disabled>Please, choose the category</option>*/}
+                            {/*:<div/>}*/}
                             {categories.map(category => (
                                 <option key={category.id} value={category.id}>{category.name}</option>
                             ))}
                         </select></div>
 
-                    {additionalServices.length === 0
+                    {!additionalServices
                         ? <div/>
                         : <div id="additionalServices">
                             {additionalServices.map(service => (
@@ -214,12 +218,12 @@ class NewAdvertisement extends React.Component {
                     </div>
 
 
-                    <label htmlFor="location-checkbox"> Set a location </label>
-                    <input key="location-checkbox" type="checkbox" onChange={this.setLocation}/>
+                    <label htmlFor="location-checkbox"> Set a location </label> <input key="location-checkbox"
+                                                                                       type="checkbox"
+                                                                                       onChange={this.setLocation}/>
 
                     {checkedCoordinates
-                        // fixme use center from state position, not magic consts
-                        ? <MapContainer style={{ height: "400px" }} className="w-25" center={[51.65635088095043, 39.19295310974122]}
+                        ? <MapContainer style={{height: "400px"}} className="w-25" center={position}
                                         zoom={14} scrollWheelZoom={true}>
                             <TileLayer
                                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

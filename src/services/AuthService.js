@@ -1,6 +1,7 @@
 import {API_CURRENT_USER, API_REGISTRATION, LOGIN, LOGOUT} from "../CommonData";
 import FetchService from "./FetchService"
 import Redirect from "../components/route/RedirectTo";
+import RedirectTo from "../components/route/RedirectTo";
 
 class AuthService {
     loginUser(credentials) {
@@ -10,7 +11,14 @@ class AuthService {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(credentials)
-        });
+        })
+            .then(result =>
+                result.json()
+                    .then(data => {
+                        localStorage.setItem("token", data.value)
+                        RedirectTo.redirectToHome();
+                    })
+            );
     }
 
     logoutUser() {
@@ -37,7 +45,14 @@ class AuthService {
     }
 
     getCurrentUser() {
-        return FetchService.handleFetch(API_CURRENT_USER + "/", {method: "GET"});
+        return FetchService.handleFetch(API_CURRENT_USER + "/", {method: "GET"})
+            .then(res => res.json())
+            .then(user => {
+                if (user.value === null) {
+                    localStorage.removeItem("token");
+                }
+                return user;
+            });
     }
 }
 

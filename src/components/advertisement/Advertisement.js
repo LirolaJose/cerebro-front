@@ -8,6 +8,7 @@ import {Carousel, CarouselItem, Image} from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {MapContainer, TileLayer} from 'react-leaflet';
 import {MyMarker} from "../marker/MyMarker";
+import {Link} from "react-router-dom";
 
 
 class Advertisement extends React.Component {
@@ -20,9 +21,9 @@ class Advertisement extends React.Component {
             advertisement: null,
             imagesIdsList: [],
             additionalServices: [],
-            coordinates: null
+            coordinates: null,
+            orderable: false
         };
-        this.redirectToOrderForm = this.redirectToOrderForm.bind(this);
     }
 
     componentDidMount() {
@@ -37,6 +38,11 @@ class Advertisement extends React.Component {
                     if (resultAdvertisement.latitude && resultAdvertisement.longitude) {
                         this.setState({
                             coordinates: {lat: resultAdvertisement.latitude, lng: resultAdvertisement.longitude}
+                        })
+                    }
+                    if (resultAdvertisement.status === "ACTIVE" && resultAdvertisement.type.orderable) {
+                        this.setState({
+                            orderable: true
                         })
                     }
                 },
@@ -68,13 +74,8 @@ class Advertisement extends React.Component {
             );
     }
 
-    redirectToOrderForm() {
-        const path = "/advertisement/order/" + this.state.advertisementId;
-        this.props.history.push(path);
-    }
-
     render() {
-        const {error, isLoaded, advertisement, imagesIdsList, additionalServices, coordinates} = this.state;
+        const {error, isLoaded, advertisement, imagesIdsList, additionalServices, coordinates, orderable} = this.state;
         if (error) {
             return <div>Error: {error.message}</div>;
         } else if (!isLoaded) {
@@ -86,7 +87,7 @@ class Advertisement extends React.Component {
                 <div>
                     <h2 id="title-info"> {advertisement.title}</h2>
 
-                    {imagesIdsList.length === 0
+                    {!imagesIdsList.length
                         ? <div id="images">
                             <div><img src={ImagesPNG} alt="Loading..."/></div>
                         </div>
@@ -106,7 +107,7 @@ class Advertisement extends React.Component {
                     </div>
                     <div id="price" className="price">Price: {advertisement.price} $</div>
 
-                    {additionalServices.length === 0
+                    {!additionalServices.length
                         ? <div/>
                         : <div id="additional-service" className="additional-service">
                             <label>Additional services: </label>
@@ -119,7 +120,7 @@ class Advertisement extends React.Component {
                         </div>
                     }
                     {coordinates
-                        ? <MapContainer style={{ height: "400px" }}  className="w-25" center={coordinates}
+                        ? <MapContainer style={{height: "400px"}} className="w-25" center={coordinates}
                                         zoom={14}>
                             <TileLayer
                                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -134,10 +135,10 @@ class Advertisement extends React.Component {
                     <div id="type">Type: {advertisement.type.name}</div>
                     <div id="category">Category: {advertisement.category.name}</div>
                     <div id="owner">Owner: {advertisement.owner.firstName} {advertisement.owner.secondName}</div>
-                    {/*fixme https://stackoverflow.com/a/58198328 <Link to="/page/+state.id"*/}
-                    <div id="order"><input type="button" value="ORDER"
-                                           onClick={this.redirectToOrderForm}/></div>
-
+                    {orderable === false
+                        ? <div/>
+                        : <Link to={"/advertisement/order/" + this.state.advertisementId}
+                                className="btn btn-primary">ORDER</Link>}
                 </div>
             )
         }

@@ -1,6 +1,7 @@
 import React from "react";
 import "./Registration.css"
 import AuthService from "../../services/AuthService";
+import RedirectTo from "../route/RedirectTo";
 
 class Registration extends React.Component {
     constructor(props) {
@@ -36,8 +37,7 @@ class Registration extends React.Component {
         }
         AuthService.registerNewUser(user)
             .then(result => {
-                // fixme use RedirectTo
-                window.location.href = "/advertisement";
+                RedirectTo.redirectToHome();
             });
     }
 
