@@ -68,3 +68,8 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `yarn build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+Run project from Docker:
+Command line:
+1.      Build Docker image:   docker build -t cerebro-front:3.0 .
+2.   	Run created image: docker run -d -p 80:80 cerebro-front:3.0

@@ -1,5 +1,10 @@
-.login-wrapper {
+.form-wrapper {
+    align-items: center;
     display: flex;
     flex-direction: column;
-    align-items: center;
+}
+
+.required-f::after {
+    color: red;
+    content: "*";
 }

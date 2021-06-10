@@ -3,9 +3,13 @@ import TypeService from "../../services/TypeService";
 import CategoryService from "../../services/CategoryService";
 import AdditionalServiceService from "../../services/AdditionalServiceService";
 import AdvertisementService from "../../services/AdvertisementService";
-import {MapContainer, TileLayer} from 'react-leaflet';
-import {DraggableMarker} from "../marker/DraggableMarker";
 import RedirectTo from "../route/RedirectTo";
+import {Button, Col, Container, Form, Row, Spinner} from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import "../advertisement/Advertisement.css";
+import {Label} from "reactstrap";
+import {DraggableMarker} from "../marker/DraggableMarker";
+import {MapContainer, TileLayer} from 'react-leaflet';
 
 
 class NewAdvertisement extends React.Component {
@@ -79,10 +83,9 @@ class NewAdvertisement extends React.Component {
             .then(result => {
                 this.setState({
                     categories: result,
-                    additionalServices: null,
+                    additionalServices: [],
                     selectedCategory: null,
                     selectedAdditionalServices: []
-
                 })
             })
     }
@@ -153,92 +156,125 @@ class NewAdvertisement extends React.Component {
 
 
     render() {
-        const {isLoaded, types, categories, additionalServices, checkedCoordinates, position} = this.state;
+        const {isLoaded, types, categories, additionalServices, checkedCoordinates, position, btnDisable} = this.state;
 
         if (!isLoaded) {
-            return <div>Loading...</div>;
+            return (
+                <Spinner animation="border" className="justify-content-center" role="status">
+                    <span className="sr-only">Loading...</span>
+                </Spinner>)
         } else {
             return (
-                <div>
-                    <div>Title <span className="required-field"/> <label htmlFor="title"/> <input id="title"
-                                                                                                  name="title"
-                                                                                                  value={this.state.title}
-                                                                                                  onChange={this.handleChange}
-                                                                                                  type="text"/>
-                    </div>
+                <Container>
+                    <Row  className=" justify-content-center align-items-center">
+                        <Button id="button-submit" disabled={btnDisable} type="button"
+                                variant={!btnDisable ? "success" : "secondary"}
+                                onClick={this.collectAndSendAdvertisement}>Add advertisement</Button>
+                    </Row>
 
-                    <div>Text <label htmlFor="text"/><textarea id="text" name="text" onChange={this.handleChange}
-                                                               placeholder="Write a description"/>
-                    </div>
-
-                    <div>Price <span className="required-field"/> <label htmlFor="price"/><input id="price" name="price"
-                                                                                                 value={this.state.price}
-                                                                                                 onChange={this.handleChange}
-                                                                                                 type="text"/>
-                    </div>
-
-                    <div>Type <span className="required-field"/> <label htmlFor="select-type"/>
-                        <select id="select-type" name="selectedType"
-                                onChange={event => this.changeTypes(event)}>
-                            <option disabled selected value={null}>Please, choose the type</option>
-                            {types.map(type => (
-                                <option key={type.id} value={type.id}>{type.name}</option>
-                            ))}
-                        </select></div>
-
-                    <div>Category <span className="required-field"/> <label htmlFor="select-category"/>
-                        <select id="select-category" disabled={!this.state.selectedType} name="selectedCategory"
-                                onChange={event => this.changeCategory(event)}>
-                            {!this.state.selectedType || !this.state.selectedCategory ? <option value={null} selected disabled>Please, choose the category</option> : <div/>}
-
-                            {/*{!this.state.selectedCategory ? <option value={null} selected disabled>Please, choose the category</option>*/}
-                            {/*:<div/>}*/}
-                            {categories.map(category => (
-                                <option key={category.id} value={category.id}>{category.name}</option>
-                            ))}
-                        </select></div>
-
-                    {!additionalServices
-                        ? <div/>
-                        : <div id="additionalServices">
-                            {additionalServices.map(service => (
-                                <div>
-                                    <input key={service.id} name="selectedAdditionalServices"
-                                           onChange={event => this.changeAdditionalServices(event)} type="checkbox"
-                                           value={service.id}/>
-                                    <label htmlFor={service.id}>{service.name}, price: {service.price}</label>
-                                </div>
-                            ))}
-                        </div>
-                    }
-
-                    <div>Images <input id="image" name="images" accept="image/jpeg, image/png, image/jpg"
-                                       formEncType="multipart/form-data" type="file" multiple
-                                       onChange={event => this.changeImages(event)}/>
-                    </div>
+                    <Row>
+                        <Col>
+                            <Form>
+                                <Form.Label className="required-field">Title</Form.Label>
+                                <Form.Control
+                                    name="title"
+                                    value={this.state.title}
+                                    onChange={this.handleChange}
+                                    type="text"/>
+                            </Form>
+                        </Col>
+                    </Row>
 
 
-                    <label htmlFor="location-checkbox"> Set a location </label> <input key="location-checkbox"
-                                                                                       type="checkbox"
-                                                                                       onChange={this.setLocation}/>
+                    <Row>
+                        <Col>
+                            <Form>
+                                <Form.Group>
+                                    <Form.Label>Description: </Form.Label>
+                                    <Form.Control as="textarea"
+                                                  name="text"
+                                                  placeholder="Write a description"
+                                                  className="textarea"
+                                                  onChange={this.handleChange}/>
+                                </Form.Group>
+                            </Form>
 
-                    {checkedCoordinates
-                        ? <MapContainer style={{height: "400px"}} className="w-25" center={position}
-                                        zoom={14} scrollWheelZoom={true}>
-                            <TileLayer
-                                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            />
-                            <DraggableMarker lat={position.lat} lng={position.lng} onChange={this.changePosition}/>
-                        </MapContainer>
-                        : <div/>}
+                            <div>Images <input id="image" name="images" accept="image/jpeg, image/png, image/jpg"
+                                               formEncType="multipart/form-data" type="file" multiple
+                                               onChange={event => this.changeImages(event)}/>
+                            </div>
+
+                            <label htmlFor="location-checkbox"> Set a location </label> <input key="location-checkbox"
+                                                                                               type="checkbox"
+                                                                                               onChange={this.setLocation}/>
+
+                        </Col>
+
+                        <Col>
+                            <Form>
+                                <Form.Group>
+                                    <Form.Label className="required-field">Price </Form.Label>
+                                    <Form.Control name="price"
+                                                  value={this.state.price}
+                                                  onChange={this.handleChange}
+                                                  type="text"/>
+                                </Form.Group>
+
+                                <Form.Group>
+                                    <Form.Label className="required-field">Type </Form.Label>
+                                    <Form.Control as="select" id="select-type" name="selectedType"
+                                                  onChange={event => this.changeTypes(event)}>
+
+                                        <option disabled selected value={null}>Please, choose the type</option>
+                                        {types.map(type => (
+                                            <option key={type.id} value={type.id}>{type.name}</option>
+                                        ))}
+                                    </Form.Control>
+                                </Form.Group>
+
+                                <Form.Group>
+                                    <Form.Label className="required-field">Category </Form.Label>
+                                    <Form.Control as="select" id="select-category" disabled={!this.state.selectedType}
+                                                  name="selectedCategory"
+                                                  onChange={event => this.changeCategory(event)}>
+                                        {!this.state.selectedType || !this.state.selectedCategory ?
+                                            <option value={null} selected disabled>Please, choose the
+                                                category</option> : <div/>}
+
+                                        {categories.map(category => (
+                                            <option key={category.id} value={category.id}>{category.name}</option>
+                                        ))}</Form.Control>
+                                </Form.Group>
 
 
-                    <div><input id="button-submit" disabled={this.state.btnDisable} type="button"
-                                onClick={this.collectAndSendAdvertisement}
-                                value="Add advertisement"/>
-                    </div>
-                </div>
+                                {additionalServices.length === 0
+                                    ? <div/>
+                                    : <Form.Group className="border">
+                                        <Label>Additional services:</Label>
+                                        {additionalServices.map(service => (
+                                            <Form.Check key={service.id} name="selectedAdditionalServices"
+                                                        onChange={event => this.changeAdditionalServices(event)}
+                                                        type="checkbox"
+                                                        value={service.id}
+                                                        label={service.name + ", price: " + service.price + "$"}/>
+                                        ))}
+                                    </Form.Group>
+                                }
+
+                                {checkedCoordinates
+                                    ? <MapContainer style={{height: "400px", width: "600px"}} center={position}
+                                                    zoom={14} scrollWheelZoom={true}>
+                                        <TileLayer
+                                            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+                                        <DraggableMarker lat={position.lat} lng={position.lng}
+                                                         onChange={this.changePosition}/>
+                                    </MapContainer>
+                                    : <div/>}
+                            </Form>
+                        </Col>
+                    </Row>
+                </Container>
             )
         }
     }

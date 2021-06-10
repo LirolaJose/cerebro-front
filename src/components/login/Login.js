@@ -1,7 +1,8 @@
 import React from 'react';
 import './Login.css';
 import AuthService from "../../services/AuthService";
-import RedirectTo from "../route/RedirectTo";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {Button, Form} from "react-bootstrap";
 
 
 class Login extends React.Component {
@@ -9,9 +10,17 @@ class Login extends React.Component {
         super(props);
         this.state = {
             login: "",
-            password: ""
+            password: "",
+            showPassword: false
         }
+        this.showPassword = this.showPassword.bind(this);
         this.collectAndSendCredentials = this.collectAndSendCredentials.bind(this);
+
+    }
+    showPassword() {
+        this.setState({
+            showPassword: !this.state.showPassword
+        });
     }
 
     collectAndSendCredentials() {
@@ -23,20 +32,26 @@ class Login extends React.Component {
     }
 
     render() {
+        const {showPassword} = this.state;
         return (
-            <div className="login-wrapper">
-                <h1>Please Log In</h1>
-                <label>
-                    <p>Username</p>
-                    <input type="text" onChange={event => this.setState({login: event.target.value})}/>
-                </label>
-                <label>
-                    <p>Password</p>
-                    <input type="password" onChange={event => this.setState({password: event.target.value})}/>
-                </label>
-                <div>
-                    <button type="submit" onClick={this.collectAndSendCredentials}>Submit</button>
-                </div>
+            <div className="form-wrapper">
+            <Form className="w-25">
+                <Form.Group className="text-lg-center" controlId="formBasicEmail">
+                    <Form.Label > Username </Form.Label>
+                    <Form.Control type="email" placeholder="Enter email" onChange={event => this.setState({login: event.target.value})}/>
+                </Form.Group>
+
+                <Form.Group className="text-lg-center" controlId="formBasicPassword">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control type={showPassword ?"text" :"password"} placeholder="Password" onChange={event => this.setState({password: event.target.value})} />
+                </Form.Group>
+
+                <Form.Group controlId="formBasicCheckbox">
+                    <Form.Check type="checkbox" label="Show password" onChange={this.showPassword} />
+                </Form.Group>
+
+                <Button type="submit" variant="primary" onClick={this.collectAndSendCredentials}>Login</Button>
+            </Form>
             </div>
         )
     }

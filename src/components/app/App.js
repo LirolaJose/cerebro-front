@@ -10,6 +10,7 @@ import Registration from "../registration/Registration";
 import GuardedRoute from "../route/GuardedRoute";
 import AuthService from "../../services/AuthService";
 import {HeaderInfo} from "../header/HeaderInfo";
+import {Spinner} from "react-bootstrap";
 
 class App extends React.Component {
     constructor(props) {
@@ -25,7 +26,6 @@ class App extends React.Component {
     componentDidMount() {
         AuthService.getCurrentUser()
             .then(user => {
-                console.log(user)
                 this.setState({
                     isLoaded: true,
                     user: user.value,
@@ -38,14 +38,16 @@ class App extends React.Component {
     render() {
         const {isAuthenticated, isLoaded, user} = this.state;
         if (!isLoaded) {
-            return <div>Loading...</div>;
+            return (
+                <Spinner animation="border" className="justify-content-center" role="status">
+                    <span className="sr-only">Loading...</span>
+                </Spinner>)
         } else {
             return (
                 <Router>
                     <Route path="/" component={() => <HeaderInfo user={user} isAuthenticated={isAuthenticated}/>}/>
 
                     <Switch>
-
                         <GuardedRoute path="/advertisement/order/:id" component={OrderAdvertisement}
                                       auth={isAuthenticated}/>
                         <GuardedRoute path="/advertisement/new" component={NewAdvertisement}

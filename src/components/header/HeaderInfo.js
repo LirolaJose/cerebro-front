@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
-import {Link, useHistory} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {TopUpBalance} from "../../services/UserService"
 import Logo from "../../image/logo.png";
-import {Nav, Navbar} from "react-bootstrap";
+import {ButtonGroup, Nav, Navbar} from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "./Header.css"
 
 export const HeaderInfo = (props) => {
-    const history = useHistory();
     const [moneyAmount, setMoneyAmount] = useState(props.user?.moneyAmount)
     const [money, setMoney] = useState();
 
@@ -16,43 +16,45 @@ export const HeaderInfo = (props) => {
             <Navbar.Toggle aria-controls="basic-navbar-nav"/>
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav>
-                    <Link to={"/advertisement/new"} className={!props.isAuthenticated ? "btn btn-primary disabled" : "btn btn-primary"}>New Advertisement</Link>
+                    <Link to={"/advertisement/new"}
+                          className={!props.isAuthenticated ? "btn btn-secondary disabled" : "btn btn-primary"}>New
+                        Advertisement</Link>
                 </Nav>
 
             </Navbar.Collapse>
 
             {!props.isAuthenticated
                 ? <Navbar.Text className="justify-content-end">
-                    <button onClick={() => history.push("/login")}>Login</button>
-                    <br/>
-                    <button onClick={() => history.push("/registration")}>Registration</button>
+                    <ButtonGroup vertical>
+                        <Link to="/login" className="btn btn-outline-success">Login</Link>
+                        <Link to="/registration" className="btn btn-outline-success">Registration</Link>
+                    </ButtonGroup>
                 </Navbar.Text>
 
-                : <Navbar.Text>
-                    Logged user: {props.user.email} <br/>
-                    Balance: {moneyAmount} $ <br/>
-                    <input type="number" value={money} step={1} min={1} placeholder="enter amount"
-                           onChange={event => setMoney(event.target.value)}/>
+                : <Navbar.Collapse className="justify-content-end">
+                    <Navbar.Text>
+                        <h6 className="logged-user">  Logged user: <text className="user-email">{props.user.email}</text> </h6>
 
-                    <input type="button" disabled={!money} onClick={() => {
-                        setMoney("");
-                        TopUpBalance({userId: props.user.id, money: money})
-                            .then(res => {
-                                res.json()
-                                    .then(newMoneyAmount => {
-                                        setMoneyAmount(newMoneyAmount.value);
-                                    })
-                            })
-                    }}
-                           value="TOP UP THE BALANCE"/> <br/>
-                    <button onClick={() => {
-                        if (window.confirm("Are you sure you want to logout?")) {
-                            history.push("/logout")
-                        }
-                    }}>Logout
-                    </button>
+                        <h6 className="balance"> Balance: <text className="money-amount" > {moneyAmount} $</text></h6>
 
-                </Navbar.Text>
+                        <input type="number" value={money} step={1} min={1} placeholder="enter amount"
+                               onChange={event => setMoney(event.target.value)}/><br/>
+
+                        <input type="button" disabled={!money} onClick={() => {
+                            setMoney("");
+                            TopUpBalance({userId: props.user.id, money: money})
+                                .then(res => {
+                                    res.json()
+                                        .then(newMoneyAmount => {
+                                            setMoneyAmount(newMoneyAmount.value);
+                                        })
+                                })
+                        }}
+                               value="TOP UP THE BALANCE"/>
+                    </Navbar.Text>
+
+                    <Link className="btn btn-danger" to={"/logout"}>Logout</Link>
+                </Navbar.Collapse>
             }
             <hr/>
         </Navbar>

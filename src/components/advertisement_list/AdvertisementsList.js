@@ -3,7 +3,7 @@ import AdvertisementService from '../../services/AdvertisementService';
 import './AdvertisementsList.css';
 import {Link} from "react-router-dom";
 import {API_IMAGE} from "../../CommonData";
-import {Table} from "react-bootstrap";
+import {Spinner, Table} from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {MyPagination} from "../pagination/Pagination";
 
@@ -62,7 +62,10 @@ class AdvertisementsList extends React.Component {
         if (error) {
             return <div>Error: {error.message}</div>;
         } else if (!isLoaded) {
-            return <div>Loading...</div>;
+            return (
+                <Spinner animation="border" className="justify-content-center" role="status">
+                    <span className="sr-only">Loading...</span>
+                </Spinner>)
         } else {
             console.log(advertisements);
         }

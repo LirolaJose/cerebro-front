@@ -4,11 +4,12 @@ import AdditionalServiceService from "../../services/AdditionalServiceService";
 import ImagesService from "../../services/ImageService";
 import {API_ADVERTISEMENT} from "../../CommonData";
 import ImagesPNG from "../../image/images.png";
-import {Carousel, CarouselItem, Image} from "react-bootstrap";
+import {Carousel, CarouselItem, Col, Container, Form, Image, ListGroup, Row, Spinner} from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {MapContainer, TileLayer} from 'react-leaflet';
 import {MyMarker} from "../marker/MyMarker";
 import {Link} from "react-router-dom";
+import "./Advertisement.css";
 
 
 class Advertisement extends React.Component {
@@ -79,67 +80,101 @@ class Advertisement extends React.Component {
         if (error) {
             return <div>Error: {error.message}</div>;
         } else if (!isLoaded) {
-            return <div>Loading...</div>;
+            return (
+                <Spinner animation="border" className="justify-content-center" role="status">
+                    <span className="sr-only">Loading...</span>
+                </Spinner>)
         } else {
             console.log(advertisement);
 
             return (
-                <div>
-                    <h2 id="title-info"> {advertisement.title}</h2>
+                <Container>
+                    <Row>
+                        <Col id="title-info" className="text-lg-center"><h3> {advertisement.title} </h3></Col>
+                        <Col className="price "><h4> Price: {advertisement.price} $ </h4></Col>
+                    </Row>
 
-                    {!imagesIdsList.length
-                        ? <div id="images">
-                            <div><img src={ImagesPNG} alt="Loading..."/></div>
-                        </div>
-                        :
-                        <Carousel className="w-25">
-                            {imagesIdsList.map(image => (
-                                <CarouselItem>
-                                    <Image className="d-block w-100 h-25" src={API_ADVERTISEMENT + "/image/" + image}
-                                           alt="Loading..."/>
-                                </CarouselItem>
-                            ))}
-                        </Carousel>
-                    }
+                    <Row>
+                        <Col sm={8}>
+                            {!imagesIdsList.length
+                                ? <div id="images" className="advertisement">
+                                    <div><img src={ImagesPNG} alt="Loading..."/></div>
+                                </div>
+                                :
+                                <Carousel className="w-100 row justify-content-center align-items-center">
+                                    {imagesIdsList.map(image => (
+                                        <CarouselItem>
+                                            <Image className="d-block w-100 h-25"
+                                                   src={API_ADVERTISEMENT + "/image/" + image}
+                                                   alt="Loading..."/>
+                                        </CarouselItem>
+                                    ))}
+                                </Carousel>}
+                        </Col>
 
-                    <div id="text">
-                        <textarea className="text-area" id="textArea" readOnly>{advertisement.text}</textarea>
-                    </div>
-                    <div id="price" className="price">Price: {advertisement.price} $</div>
+                        <Col sm={4}>
+                            <ListGroup className="w-75 justify-content-lg-start">
+                                <ListGroup.Item variant="primary">Owner</ListGroup.Item>
+                                <ListGroup.Item>Name: {advertisement.owner.firstName} {advertisement.owner.secondName}</ListGroup.Item>
+                                <ListGroup.Item>Phone: {advertisement.owner.phone}</ListGroup.Item>
+                                <ListGroup.Item>Email: {advertisement.owner.email}</ListGroup.Item>
+                            </ListGroup>
 
-                    {!additionalServices.length
-                        ? <div/>
-                        : <div id="additional-service" className="additional-service">
-                            <label>Additional services: </label>
-                            <ol id="additional-services-list">
-                                {additionalServices.map(additionalService => (
-                                        <li key={additionalService.id}> {additionalService.name} ,price: {additionalService.price}</li>
-                                    )
-                                )}
-                            </ol>
-                        </div>
-                    }
-                    {coordinates
-                        ? <MapContainer style={{height: "400px"}} className="w-25" center={coordinates}
-                                        zoom={14}>
-                            <TileLayer
-                                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            />
-                            <MyMarker lat={coordinates.lat} lng={coordinates.lng} position={coordinates}/>
-                        </MapContainer>
-                        :
-                        <div/>
-                    }
+                            {orderable === false
+                                ? <div/>
+                                : <Link to={"/advertisement/order/" + this.state.advertisementId}
+                                        className="btn btn-primary">ORDER</Link>}
+                        </Col>
+                    </Row>
 
-                    <div id="type">Type: {advertisement.type.name}</div>
-                    <div id="category">Category: {advertisement.category.name}</div>
-                    <div id="owner">Owner: {advertisement.owner.firstName} {advertisement.owner.secondName}</div>
-                    {orderable === false
-                        ? <div/>
-                        : <Link to={"/advertisement/order/" + this.state.advertisementId}
-                                className="btn btn-primary">ORDER</Link>}
-                </div>
+                    <Row>
+                        <Col sm={8}>
+                            <div id="type">Type: {advertisement.type.name}</div>
+                            <div id="category">Category: {advertisement.category.name}</div>
+
+                            {!additionalServices.length
+                                ? <div/>
+                                :
+                                <div>
+                                    <label>Additional services: </label>
+                                    <ListGroup className="w-75">
+                                        {additionalServices.map(additionalService => (
+                                                <ListGroup.Item key={additionalService.id}> {additionalService.name},
+                                                    price: {additionalService.price} $</ListGroup.Item>
+                                            )
+                                        )}
+                                    </ListGroup>
+                                </div>}
+
+                            <Form className="w-50 ">
+                                <Form.Group>
+                                    <Form.Label className="align-content-center">Description: </Form.Label>
+                                    <Form.Control as="textarea" readOnly
+                                                  className="textarea">{advertisement.text}</Form.Control>
+                                </Form.Group>
+                            </Form>
+                        </Col>
+
+                        <Col sm={4}>
+                            {coordinates
+                                ? <MapContainer style={{height: "400px"}} className="w-100" center={coordinates}
+                                                zoom={14}>
+                                    <TileLayer
+                                        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                    />
+                                    <MyMarker lat={coordinates.lat} lng={coordinates.lng} position={coordinates}/>
+                                </MapContainer>
+                                :
+                                <div/>
+                            }
+
+                        </Col>
+                    </Row>
+
+
+
+                </Container>
             )
         }
     }

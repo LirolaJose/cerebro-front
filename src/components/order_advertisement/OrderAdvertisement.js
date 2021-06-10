@@ -1,10 +1,13 @@
 import React from "react";
 import {Link} from "react-router-dom";
-import {API_IMAGE} from "../../CommonData";
+import {API_ADVERTISEMENT} from "../../CommonData";
 import OrderService from "../../services/OrderService";
 import AdditionalServiceService from "../../services/AdditionalServiceService";
 import AdvertisementService from "../../services/AdvertisementService";
 import RedirectTo from "../route/RedirectTo";
+import {Carousel, CarouselItem, Col, Container, Form, Image, ListGroup, Row, Spinner} from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import ImagesService from "../../services/ImageService";
 
 class OrderAdvertisement extends React.Component {
     constructor(props) {
@@ -12,25 +15,27 @@ class OrderAdvertisement extends React.Component {
         this.state = {
             isLoaded: false,
             advertisement: null,
+            advertisementId: parseInt(this.props.match.params.id),
             orderable: false,
             additionalServices: [],
             selectedAdditionalServices: [],
             totalPrice: 0,
-            btnDisable: false
+            btnDisable: false,
+            imagesIdsList: [],
         }
         this.getTotalPrice = this.getTotalPrice.bind(this);
         this.collectAndSendOrder = this.collectAndSendOrder.bind(this);
     }
 
     componentDidMount() {
-        const advertisementId = parseInt(this.props.match.params.id);
+        const advertisementId = this.state.advertisementId;
         AdvertisementService.getAdvertisementById(advertisementId)
             .then(res => res.json())
             .then((result) => {
                 this.setState({
                     isLoaded: true,
                     advertisement: result,
-                    totalPrice: result.price
+                    totalPrice: result.price,
                 })
                 if (result.status === "ACTIVE" && result.type.orderable) {
                     this.setState({
@@ -38,6 +43,7 @@ class OrderAdvertisement extends React.Component {
                     })
                 }
             })
+
         AdditionalServiceService.getAdditionalServicesByAdvertisementId(advertisementId)
             .then(res => res.json())
             .then((result) => {
@@ -45,6 +51,16 @@ class OrderAdvertisement extends React.Component {
                     additionalServices: result
                 })
             })
+
+        ImagesService.getImagesList(this.state.advertisementId)
+            .then(res => res.json())
+            .then(
+                (imagesList) => {
+                    this.setState({
+                        imagesIdsList: imagesList
+                    })
+                }
+            );
     }
 
     getTotalPrice(event, servicePrice) {
@@ -87,39 +103,77 @@ class OrderAdvertisement extends React.Component {
 
 
     render() {
-        const {isLoaded, advertisement, orderable, additionalServices, totalPrice} = this.state;
+        const {isLoaded, advertisement, orderable, additionalServices, totalPrice, imagesIdsList, btnDisable} = this.state;
         if (!isLoaded) {
-            return <div>Loading...</div>;
+            return (
+                <Spinner animation="border" className="justify-content-center" role="status">
+                    <span className="sr-only">Loading...</span>
+                </Spinner>)
         } else {
             return (
-                <div>
-                    <div><Link to={"/advertisement/" + advertisement.id}> {advertisement.title} </Link></div>
-                    <div>Price: {advertisement.price} $</div>
-                    <div><img src={API_IMAGE + "/" + advertisement.id} alt="Loading..."/></div>
+                <Container>
+                    <Row className="row justify-content-center align-items-center">
+                        <Link to={"/advertisement/" + advertisement.id}><h4>{advertisement.title}</h4></Link>
+                    </Row>
 
-                    {additionalServices.length === 0
-                        ? <div/>
-                        : <div id="additionalServices">
-                            {additionalServices.map(service => (
-                                <div>
-                                    <input key={service.id} name="selectedAdditionalServices"
-                                           onChange={event => this.getTotalPrice(event, service.price)}
-                                           type="checkbox"
-                                           value={service.id}/>
-                                    <label htmlFor={service.id}>{service.name}, price: {service.price}</label>
-                                </div>
-                            ))}
-                        </div>
-                    }
-                    <div>Total price: <input id="total-price" type="text" value={totalPrice} readOnly/></div>
+                    <Row>
+                        <Col>
+                            <h4> Price: {advertisement.price} $ </h4>
 
-                    {orderable === false
-                        ? <div/>
-                        : <div><input id="order-button" disabled={this.state.btnDisable} type="button"
-                                      onClick={this.collectAndSendOrder}
-                                      value="CONFIRM THE ORDER"/>
-                        </div>}
-                </div>
+                            {additionalServices.length === 0
+                                ? <div/>
+                                : <Form className="border">
+                                    <Form.Label as="legend" column sm={4}>
+                                        Additional Services:
+                                    </Form.Label>
+
+                                    {additionalServices.map(service => (
+                                        <Col>
+                                            <Form.Check key={service.id} name="selectedAdditionalServices"
+                                                        onChange={event => this.getTotalPrice(event, service.price)}
+                                                        type="checkbox"
+                                                        value={service.id}
+                                                        label={service.name + ", price: " + service.price + "$"}/>
+                                        </Col>
+                                    ))}
+
+
+                                </Form>
+                            }
+                            <div><h4>Total price: <input id="total-price" type="text" value={totalPrice + " $"}
+                                                         readOnly/> </h4></div>
+
+
+                            {orderable === false
+                                ? <div/>
+                                : <div><input id="order-button" disabled={btnDisable} type="button" className={!btnDisable ? "btn-success" : "btn-secondary"}
+                                              onClick={() => { if(window.confirm("Confirm the order?")){ this.collectAndSendOrder()}}}
+                                              value="CONFIRM THE ORDER"/>
+                                </div>}
+                        </Col>
+
+                        <Col>
+                            <ListGroup className="w-75">
+                                <ListGroup.Item variant="primary">Owner</ListGroup.Item>
+                                <ListGroup.Item>Name: {advertisement.owner.firstName} {advertisement.owner.secondName}</ListGroup.Item>
+                                <ListGroup.Item>Phone: {advertisement.owner.phone}</ListGroup.Item>
+                                <ListGroup.Item>Email: {advertisement.owner.email}</ListGroup.Item>
+                            </ListGroup>
+
+                            {!imagesIdsList.length
+                                ? <div/>
+                                : <Carousel className="w-75 ">
+                                    {imagesIdsList.map(image => (
+                                        <CarouselItem>
+                                            <Image className="d-block w-100 h-25"
+                                                   src={API_ADVERTISEMENT + "/image/" + image}
+                                                   alt="Loading..."/>
+                                        </CarouselItem>
+                                    ))}
+                                </Carousel>}
+                        </Col>
+                    </Row>
+                </Container>
             )
         }
     }
