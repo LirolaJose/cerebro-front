@@ -1,8 +1,8 @@
 .textarea{
     height:250px;
-    max-height:250px;
+    max-height:150px;
     max-width:470px;
-    min-height:250px;
+    min-height:150px;
     min-width:470px;
     text-align: left;
     width: 470px;

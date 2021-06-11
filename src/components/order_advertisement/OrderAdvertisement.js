@@ -98,7 +98,11 @@ class OrderAdvertisement extends React.Component {
         OrderService.createOrder(advertisementOrderDTO)
             .then(result => {
                 RedirectTo.redirectToHome();
-            });
+            }).catch(err => {
+            this.setState({
+                btnDisable: false
+            })
+        });
     }
 
 

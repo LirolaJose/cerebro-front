@@ -71,5 +71,5 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 Run project from Docker:
 Command line:
-1.      Build Docker image:   docker build -t cerebro-front:3.0 .
+1.      Build Docker image: docker build -t cerebro-front:3.0 .
 2.   	Run created image: docker run -d -p 80:80 cerebro-front:3.0

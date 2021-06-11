@@ -3,7 +3,7 @@ import AdvertisementService from '../../services/AdvertisementService';
 import './AdvertisementsList.css';
 import {Link} from "react-router-dom";
 import {API_IMAGE} from "../../CommonData";
-import {Spinner, Table} from "react-bootstrap";
+import {Image, Spinner, Table} from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {MyPagination} from "../pagination/Pagination";
 
@@ -77,7 +77,7 @@ class AdvertisementsList extends React.Component {
                     <thead>
                     <tr>
                         <th>№</th>
-                        <th>Title</th>
+                        <th className="title-ads">Title</th>
                         <th className="text">Text</th>
                         <th>Price</th>
                         <th>Image</th>
@@ -89,11 +89,11 @@ class AdvertisementsList extends React.Component {
                     <tbody>
                     {advertisements.map(ad => (
                         <tr key={ad.id}>
-                            <td className="justify-content-center">{ad.id}</td>
+                            <td>{ad.id}</td>
                             <td><Link to={"/advertisement/" + ad.id}> {ad.title} </Link></td>
                             <td>{ad.text}</td>
                             <td>{ad.price} $</td>
-                            <td><img src={API_IMAGE + "/" + ad.id} alt="Loading..."/></td>
+                            <td><Image src={API_IMAGE + "/" + ad.id} alt="Loading..."/></td>
                             <td>{ad.type.name}</td>
                             <td>{ad.category.name}</td>
                             <td>{ad.owner.firstName} {ad.owner.secondName}</td>

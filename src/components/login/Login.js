@@ -50,7 +50,7 @@ class Login extends React.Component {
                     <Form.Check type="checkbox" label="Show password" onChange={this.showPassword} />
                 </Form.Group>
 
-                <Button type="submit" variant="primary" onClick={this.collectAndSendCredentials}>Login</Button>
+                <Button type="button" variant="primary" onClick={this.collectAndSendCredentials}>Login</Button>
             </Form>
             </div>
         )

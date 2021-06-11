@@ -166,12 +166,6 @@ class NewAdvertisement extends React.Component {
         } else {
             return (
                 <Container>
-                    <Row  className=" justify-content-center align-items-center">
-                        <Button id="button-submit" disabled={btnDisable} type="button"
-                                variant={!btnDisable ? "success" : "secondary"}
-                                onClick={this.collectAndSendAdvertisement}>Add advertisement</Button>
-                    </Row>
-
                     <Row>
                         <Col>
                             <Form>
@@ -207,6 +201,16 @@ class NewAdvertisement extends React.Component {
                             <label htmlFor="location-checkbox"> Set a location </label> <input key="location-checkbox"
                                                                                                type="checkbox"
                                                                                                onChange={this.setLocation}/>
+                            {checkedCoordinates
+                                ? <MapContainer style={{height: "350px", width: "600px"}} center={position}
+                                                zoom={14} scrollWheelZoom={true}>
+                                    <TileLayer
+                                        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+                                    <DraggableMarker lat={position.lat} lng={position.lng}
+                                                     onChange={this.changePosition}/>
+                                </MapContainer>
+                                : <div/>}
 
                         </Col>
 
@@ -260,19 +264,13 @@ class NewAdvertisement extends React.Component {
                                         ))}
                                     </Form.Group>
                                 }
-
-                                {checkedCoordinates
-                                    ? <MapContainer style={{height: "400px", width: "600px"}} center={position}
-                                                    zoom={14} scrollWheelZoom={true}>
-                                        <TileLayer
-                                            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
-                                        <DraggableMarker lat={position.lat} lng={position.lng}
-                                                         onChange={this.changePosition}/>
-                                    </MapContainer>
-                                    : <div/>}
                             </Form>
                         </Col>
+                    </Row>
+                    <Row className=" justify-content-center align-items-center">
+                        <Button id="button-submit" disabled={btnDisable} type="button"
+                                variant={!btnDisable ? "success" : "secondary"}
+                                onClick={this.collectAndSendAdvertisement}>Add advertisement</Button>
                     </Row>
                 </Container>
             )
