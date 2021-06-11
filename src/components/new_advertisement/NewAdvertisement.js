@@ -211,7 +211,6 @@ class NewAdvertisement extends React.Component {
                                                      onChange={this.changePosition}/>
                                 </MapContainer>
                                 : <div/>}
-
                         </Col>
 
                         <Col>

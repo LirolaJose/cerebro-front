@@ -91,7 +91,8 @@ class Advertisement extends React.Component {
                 <Container>
                     <Row>
                         <Col id="title-info" className="text-lg-center"><h3> {advertisement.title} </h3></Col>
-                        <Col className="price ">{advertisement.type.name === "WORK" ? <h4>Salary: {advertisement.price} $</h4> : <h4> Price: {advertisement.price} $ </h4>}</Col>
+                        <Col className="price ">{advertisement.type.name === "WORK" ?
+                            <h4>Salary: {advertisement.price} $</h4> : <h4> Price: {advertisement.price} $ </h4>}</Col>
                     </Row>
 
                     <Row>
@@ -171,7 +172,6 @@ class Advertisement extends React.Component {
 
                         </Col>
                     </Row>
-
 
 
                 </Container>

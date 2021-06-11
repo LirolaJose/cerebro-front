@@ -107,4 +107,5 @@ class AdvertisementsList extends React.Component {
         );
     }
 }
+
 export default AdvertisementsList;

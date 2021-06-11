@@ -1,9 +1,11 @@
-.logged-user, .balance{
+.logged-user, .balance {
     color: black;
 }
+
 .user-email {
     color: #0865c2;
 }
+
 .money-amount {
     color: indigo;
 }

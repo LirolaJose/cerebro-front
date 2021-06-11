@@ -107,7 +107,15 @@ class OrderAdvertisement extends React.Component {
 
 
     render() {
-        const {isLoaded, advertisement, orderable, additionalServices, totalPrice, imagesIdsList, btnDisable} = this.state;
+        const {
+            isLoaded,
+            advertisement,
+            orderable,
+            additionalServices,
+            totalPrice,
+            imagesIdsList,
+            btnDisable
+        } = this.state;
         if (!isLoaded) {
             return (
                 <Spinner animation="border" className="justify-content-center" role="status">
@@ -145,13 +153,18 @@ class OrderAdvertisement extends React.Component {
                                 </Form>
                             }
                             <div><h4>Total price: <input id="total-price" type="text" value={totalPrice + " $"}
-                                                         readOnly/> </h4></div>
+                                                         readOnly/></h4></div>
 
 
                             {orderable === false
                                 ? <div/>
-                                : <div><input id="order-button" disabled={btnDisable} type="button" className={!btnDisable ? "btn-success" : "btn-secondary"}
-                                              onClick={() => { if(window.confirm("Confirm the order?")){ this.collectAndSendOrder()}}}
+                                : <div><input id="order-button" disabled={btnDisable} type="button"
+                                              className={!btnDisable ? "btn-success" : "btn-secondary"}
+                                              onClick={() => {
+                                                  if (window.confirm("Confirm the order?")) {
+                                                      this.collectAndSendOrder()
+                                                  }
+                                              }}
                                               value="CONFIRM THE ORDER"/>
                                 </div>}
                         </Col>

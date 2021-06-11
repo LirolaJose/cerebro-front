@@ -1,6 +1,3 @@
-import React from "react";
-
-
 class RedirectTo {
     redirectToHome() {
         window.location.href = "/advertisement";

@@ -75,11 +75,12 @@ class Registration extends React.Component {
 
                     <Form.Group className="align-items-center" controlId="formBasicPassword">
                         <Form.Label className="required-f">Password</Form.Label>
-                        <Form.Control type={showPassword ?"text" :"password"} placeholder="Password" onChange={event => this.setState({password: event.target.value})} />
+                        <Form.Control type={showPassword ? "text" : "password"} placeholder="Password"
+                                      onChange={event => this.setState({password: event.target.value})}/>
                     </Form.Group>
 
                     <Form.Group controlId="formBasicCheckbox">
-                        <Form.Check type="checkbox" label="Show password" onChange={this.showPassword} />
+                        <Form.Check type="checkbox" label="Show password" onChange={this.showPassword}/>
                     </Form.Group>
 
                     <Button type="submit" variant="primary" onClick={this.addNewUserInfo}>Sign Up</Button>

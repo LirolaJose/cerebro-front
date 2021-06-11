@@ -13,8 +13,8 @@ export function MyPagination(props) {
     }
     return (
         <Pagination className="justify-content-center"
-            activePage={activePage}
-            size="sm"> {items}
+                    activePage={activePage}
+                    size="sm"> {items}
             {props.onClick}
         </Pagination>
     )

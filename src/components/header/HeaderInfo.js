@@ -33,9 +33,10 @@ export const HeaderInfo = (props) => {
 
                 : <Navbar.Collapse className="justify-content-end">
                     <Navbar.Text>
-                        <h6 className="logged-user">  Logged user: <text className="user-email">{props.user.email}</text> </h6>
+                        <h6 className="logged-user"> Logged user: <text className="user-email">{props.user.email}</text>
+                        </h6>
 
-                        <h6 className="balance"> Balance: <text className="money-amount" > {moneyAmount} $</text></h6>
+                        <h6 className="balance"> Balance: <text className="money-amount"> {moneyAmount} $</text></h6>
 
                         <input type="number" value={money} step={1} min={1} placeholder="enter amount"
                                onChange={event => setMoney(event.target.value)}/><br/>
